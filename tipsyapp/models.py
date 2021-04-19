@@ -87,5 +87,5 @@ class Venue(models.Model):
         ordering=['join_date']
 
     def __str__(self):
-        return f'{self.first_name}'
+        return f'{self.venue_name}'
 
