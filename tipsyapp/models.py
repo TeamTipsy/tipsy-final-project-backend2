@@ -68,7 +68,6 @@ class Venue(models.Model):
     hours_of_operation = models.TextField(max_length=300)
     web_url = models.URLField(max_length=200)
     email = models.EmailField(max_length=254)
-    phone_num = models.CharField(max_length=10)
     street_address = models.CharField(max_length=150)
     city = models.CharField(max_length=150)
     state = models.CharField(max_length=150)
