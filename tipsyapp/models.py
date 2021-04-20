@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
+from annoying.fields import AutoOneToOneField
 
 class User(AbstractUser):
     first_name = models.CharField(max_length=50)
@@ -12,7 +13,7 @@ class User(AbstractUser):
     prof_pic = models.URLField(max_length=300)
     star_user = models.BooleanField(default=False)
     users_following_num = models.IntegerField(default=0)
-    # users_following_list = models.ManyToManyField('auth.User', related_name="user_follows", blank=True)
+    users_following_list = models.ManyToManyField('User', related_name="user_follows", blank=True)
     venues_following_num = models.IntegerField(default=0)
     venues_following_list = models.ManyToManyField('Venue', related_name="venue_follows", blank=True)
 
@@ -22,6 +23,12 @@ class User(AbstractUser):
     def __str__(self):
         return f'{self.first_name}'
 
+class UserProfile(models.Model):
+    user = AutoOneToOneField(User, on_delete=models.CASCADE)
+    follows = models.ManyToManyField('UserProfile', related_name="followed_by")
+
+    def __str__(self):
+        return f'{self.first_name}'
 
 
 VENUE_TYPE = [
@@ -73,7 +80,7 @@ class Venue(models.Model):
     state = models.CharField(max_length=150)
     prof_pic = models.URLField(max_length=300)
     followers_num = models.IntegerField(default=0)
-    # followers_list = models.ManyToManyField('auth.User', related_name="venue_followers", blank=True)
+    followers_list = models.ManyToManyField(User, related_name="venue_followers", blank=True)
     # comments = models.ManyToManyField()
     tags = models.CharField(choices=TAG_CHOICES, blank=True, null=True, max_length=103)
     # menu_images = models.ManyToManyField()

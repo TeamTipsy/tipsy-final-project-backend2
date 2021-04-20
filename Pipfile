@@ -14,6 +14,7 @@ django-cors-headers = "*"
 django-debug-toolbar = "*"
 django-extensions = "*"
 djoser = "*"
+django-annoying = "*"
 
 [dev-packages]
 
