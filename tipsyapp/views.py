@@ -3,7 +3,7 @@ from rest_framework import generics
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticatedOrReadOnly, AllowAny, IsAuthenticated
 from rest_framework.exceptions import ValidationError
-from .models import User, Venue
+from .models import User, Venue, Post
 from .serializers import UserSerializer, VenueSerializer
 
 
