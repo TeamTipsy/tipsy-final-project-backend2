@@ -11,6 +11,9 @@ psycopg2-binary = "*"
 django-on-heroku = "*"
 gunicorn = "*"
 django-cors-headers = "*"
+django-debug-toolbar = "*"
+django-extensions = "*"
+djoser = "*"
 
 [dev-packages]
 
