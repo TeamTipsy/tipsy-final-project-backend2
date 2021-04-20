@@ -13,6 +13,7 @@ class MyUserCreationForm(UserCreationForm):
             'prof_pic', 
             'star_user',  
             'users_following_num', 
+            'users_following_list',
             'venues_following_num' 
             )
 

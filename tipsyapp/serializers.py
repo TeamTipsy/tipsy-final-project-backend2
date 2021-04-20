@@ -16,7 +16,7 @@ class UserSerializer(serializers.ModelSerializer):
             'prof_pic', 
             'star_user',  
             'users_following_num', 
-            # 'users_following_list', 
+            'users_following_list', 
             'venues_following_num', 
             'venues_following_list', 
         ]
