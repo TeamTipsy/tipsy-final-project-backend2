@@ -10,6 +10,7 @@ django-environ = "*"
 psycopg2-binary = "*"
 django-on-heroku = "*"
 gunicorn = "*"
+django-cors-headers = "*"
 
 [dev-packages]
 
