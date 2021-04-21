@@ -4,6 +4,7 @@ from annoying.fields import AutoOneToOneField
 import uuid
 
 class User(AbstractUser):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False, unique=True)
     first_name = models.CharField(max_length=50)
     last_name = models.CharField(max_length=50)
     email = models.EmailField(max_length=254)
@@ -70,7 +71,7 @@ class Venue(models.Model):
         (LOTSODRAFTS, 'Large Variety of Draft Beers'),
     ]
 
-
+    venue_id = models.UUIDField(primary_key=True, default= uuid.uuid4, editable=False, unique=True)
     venue_name = models.CharField(max_length=100)
     venue_type = models.CharField(choices=BDW_CHOICES, default='br', max_length=30)
     is_authenticated = models.BooleanField(default=False)
@@ -99,7 +100,7 @@ class Venue(models.Model):
 
 
 class Post(models.Model):
-    post_id = models.UUIDField(primary_key=True, default= uuid.uuid4, editable=False)
+    post_id = models.UUIDField(primary_key=True, default= uuid.uuid4, editable=False, unique=True)
     post_author = models.ForeignKey(User, on_delete=models.CASCADE)
     posted_to = models.ForeignKey(Venue, on_delete=models.CASCADE)
     post_img = models.URLField(max_length=300, blank=True)
