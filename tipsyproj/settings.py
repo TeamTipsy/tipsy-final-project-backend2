@@ -13,7 +13,7 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 from pathlib import Path
 import environ
 import django_on_heroku
-
+import uuid 
 
 
 env = environ.Env()
@@ -36,6 +36,7 @@ DEBUG = True
 ALLOWED_HOSTS = []
 
 AUTH_USER_MODEL = "tipsyapp.User"
+
 
 # Application definition
 
