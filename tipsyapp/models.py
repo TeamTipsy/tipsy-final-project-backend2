@@ -28,7 +28,7 @@ class User(AbstractUser):
         ordering=['join_date']
 
     def __str__(self):
-        return f'{self.first_name}'
+        return f'{self.username}'
 
 # class UserProfile(models.Model):
 #     user = AutoOneToOneField(User, on_delete=models.CASCADE)
@@ -96,8 +96,6 @@ class Venue(models.Model):
     tags = models.CharField(choices=TAG_CHOICES, blank=True, null=True, max_length=103)
     # menu_images = models.ManyToManyField()
     # user_uploaded_images = models.ManyToManyField()
-
-
     join_date = models.DateTimeField(auto_now_add=True)
     
     class Meta:
