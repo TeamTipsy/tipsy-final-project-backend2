@@ -18,4 +18,3 @@
 
 -(https://tipsy-backend.herokuapp.com/venues/<uuid:pk>/) - This is the endpoint for the venue detail page. 
 
--
