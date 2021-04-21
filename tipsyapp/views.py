@@ -11,8 +11,13 @@ class UserDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = User.objects.all()
     serializer_class = UserSerializer
     permission_classes = [IsAuthenticated]
-    
-    
+
+class UserList(generics.ListCreateAPIView):
+    queryset= User.objects.all()
+    serializer_class = UserSerializer    
+    permission_classes = [IsAuthenticatedOrReadOnly]
+
+
 class VenueList(generics.ListCreateAPIView):
     queryset= Venue.objects.all()
     serializer_class = VenueSerializer    
