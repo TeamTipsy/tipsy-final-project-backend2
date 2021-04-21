@@ -36,12 +36,13 @@ class VenueDetail(generics.RetrieveUpdateDestroyAPIView):
         obj = Venue.objects.get(venue_id=pk)
         if request.user not in obj.followers_list.all():
             obj.followers_list.add(request.user)
-            obj.followers_num += 1
+            request.user.venues_following_list.add(obj.venue_id)
             return Response({'detail': 'Venue Followed'})
         elif request.user in obj.followers_list.all():
             obj.followers_list.remove(request.user)
-            obj.followers_num -= 1
+            request.user.venues_following_list.remove(obj.venue_id)
             return Response({'detail': 'Venue Unfollowed'})
+            
 
         return Response({'detail': 'something went wrong with your follow request. are you passing a token?'})
 
