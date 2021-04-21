@@ -1,8 +1,11 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 from annoying.fields import AutoOneToOneField
+import uuid
 
 class User(AbstractUser):
+    user_id = models.UUIDField(primary_key=True, default= uuid.uuid4, editable=False, unique=True)
+    username = models.CharField(max_length=32, unique=True)
     first_name = models.CharField(max_length=50)
     last_name = models.CharField(max_length=50)
     email = models.EmailField(max_length=254)
@@ -14,6 +17,7 @@ class User(AbstractUser):
     star_user = models.BooleanField(default=False)
     users_following_num = models.IntegerField(default=0)
     users_following_list = models.ManyToManyField('User', related_name="user_follows", blank=True)
+    users_followed_by_list = models.ManyToManyField('User', related_name="followed_by", blank=True)
     venues_following_num = models.IntegerField(default=0)
     venues_following_list = models.ManyToManyField('Venue', related_name="venue_follows", blank=True)
 
@@ -23,12 +27,12 @@ class User(AbstractUser):
     def __str__(self):
         return f'{self.first_name}'
 
-class UserProfile(models.Model):
-    user = AutoOneToOneField(User, on_delete=models.CASCADE)
-    follows = models.ManyToManyField('UserProfile', related_name="followed_by")
+# class UserProfile(models.Model):
+#     user = AutoOneToOneField(User, on_delete=models.CASCADE)
+#     follows = models.ManyToManyField('UserProfile', related_name="followed_by", blank=True)
 
-    def __str__(self):
-        return f'{self.first_name}'
+#     def __str__(self):
+#         return f'{self.first_name}'
 
 
 VENUE_TYPE = [
@@ -67,8 +71,7 @@ class Venue(models.Model):
         (APPETIZERS, 'Great Appetizers'),
         (LOTSODRAFTS, 'Large Variety of Draft Beers'),
     ]
-
-
+    venue_id = models.UUIDField(primary_key=True, default= uuid.uuid4, editable=False, unique=True)
     venue_name = models.CharField(max_length=100)
     venue_type = models.CharField(choices=BDW_CHOICES, default='br', max_length=30)
     is_authenticated = models.BooleanField(default=False)
@@ -95,3 +98,17 @@ class Venue(models.Model):
     def __str__(self):
         return f'{self.venue_name}'
 
+
+class Post(models.Model):
+    post_id = models.UUIDField(primary_key=True, default= uuid.uuid4, editable=False, unique=True)
+    post_author = models.ForeignKey(User, on_delete=models.CASCADE)
+    posted_to = models.ForeignKey(Venue, on_delete=models.CASCADE)
+    post_img = models.URLField(max_length=300, blank=True)
+    post_text = models.TextField(max_length=800, blank=True, null=True)  
+    post_date = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering=['post_date']
+
+    def __str__(self):
+        return self.post_id    
