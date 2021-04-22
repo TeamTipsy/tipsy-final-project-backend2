@@ -1,4 +1,5 @@
 from django.db import models
+from django.db.models import Q
 from django.contrib.auth.models import AbstractUser
 from annoying.fields import AutoOneToOneField
 import uuid
@@ -23,6 +24,8 @@ class User(AbstractUser):
     users_followed_by_list = models.ManyToManyField('User', related_name="followed_by", blank=True)
     venues_following_num = models.IntegerField(default=0)
     venues_following_list = models.ManyToManyField('Venue', related_name="venue_follows", blank=True)
+    posts_liked = models.ManyToManyField('Post', related_name="posts_liked", blank = True)
+    venue_posts_liked = models.ManyToManyField('VenuePost', related_name="venue_posts_liked", blank = True)
 
     class Meta:
         ordering=['join_date']
@@ -91,7 +94,7 @@ class Venue(models.Model):
     zip = models.DecimalField(max_digits=5, decimal_places=0, blank=True, null=True)
     prof_pic = models.URLField(max_length=300)
     followers_num = models.IntegerField(default=0)
-    followers_list = models.ManyToManyField(User, related_name="venue_followers", blank=True)
+    followers_list = models.ManyToManyField('User', related_name="venue_followers", blank=True)
     # comments = models.ManyToManyField()
     tags = models.CharField(choices=TAG_CHOICES, blank=True, null=True, max_length=103)
     # menu_images = models.ManyToManyField()
@@ -107,14 +110,31 @@ class Venue(models.Model):
 
 class Post(models.Model):
     post_id = models.UUIDField(primary_key=True, default= uuid.uuid4, editable=False, unique=True)
-    post_author = models.ForeignKey(User, on_delete=models.CASCADE)
-    posted_to = models.ForeignKey(Venue, on_delete=models.CASCADE)
-    post_img = models.URLField(max_length=300, blank=True)
-    post_text = models.TextField(max_length=800, blank=True, null=True)  
+    post_author = models.ForeignKey(User, on_delete=models.CASCADE, related_name="post_author")
+    posted_to_user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="posted_to_user")
+    post_likers = models.ManyToManyField('User', related_name="post_likers", blank = True)
     post_date = models.DateTimeField(auto_now_add=True)
+    post_img = models.URLField(max_length=300, blank=True, null=True)
+    post_text = models.TextField(max_length=800, blank=True, null=True)  
 
     class Meta:
         ordering=['post_date']
 
     def __str__(self):
-        return self.post_id    
+        return f'{self.post_id}'    
+
+
+class VenuePost(models.Model):        
+    venue_post_id = models.UUIDField(primary_key=True, default= uuid.uuid4, editable=False, unique=True)
+    venue_post_author = models.ForeignKey(User, on_delete=models.CASCADE, related_name="venue_post_author")
+    posted_to_venue = models.ForeignKey(Venue, on_delete=models.CASCADE, blank=True, null=True)
+    venue_post_likers = models.ManyToManyField('User', related_name="venue_post_likers", blank = True)
+    venue_post_date = models.DateTimeField(auto_now_add=True)
+    venue_post_img = models.URLField(max_length=300, blank=True, null=True)
+    venue_post_text = models.TextField(max_length=800, blank=True, null=True)  
+
+    class Meta:
+        ordering=['venue_post_date']
+
+    def __str__(self):
+        return f'{self.venue_post_id}'         

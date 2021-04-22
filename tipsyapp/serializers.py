@@ -1,5 +1,5 @@
 from rest_framework import serializers, fields
-from .models import User, Venue
+from .models import User, Venue, Post, VenuePost
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -25,6 +25,8 @@ class UserSerializer(serializers.ModelSerializer):
             'users_followed_by_list', 
             'venues_following_num', 
             'venues_following_list', 
+            'posts_liked',
+            'venue_posts_liked',
         ]
 
 
@@ -73,3 +75,29 @@ class VenueSerializer(serializers.ModelSerializer):
             'tags', 
             'join_date',
         ]
+
+class PostSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Post
+        fields = [
+            'post_id',
+            'post_author',
+            'posted_to_user',
+            'post_likers',
+            'post_date',
+            'post_img',
+            'post_text',
+        ]        
+
+class VenuePostSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = VenuePost
+        fields = [
+            'venue_post_id',
+            'venue_post_author',
+            'posted_to_venue',
+            'venue_post_likers',
+            'venue_post_date',
+            'venue_post_img',
+            'venue_post_text',
+        ]               
