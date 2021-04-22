@@ -56,10 +56,22 @@ class VenueInfoSerializer(serializers.ModelSerializer):
             'fb_link', 
             'venue_address', 
         ]
-
+class VenuePostSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = VenuePost
+        fields = [
+            'venue_post_id',
+            'venue_post_author',
+            'posted_to_venue',
+            'venue_post_likers',
+            'venue_post_date',
+            'venue_post_img',
+            'venue_post_text',
+        ]               
 
 class VenueSerializer(serializers.ModelSerializer):
     venue_info = VenueInfoSerializer(source='*', read_only=True)
+    posts_on_venue = VenuePostSerializer(many=True,  read_only=True)
     class Meta:
         model = Venue
         fields = [
@@ -74,6 +86,7 @@ class VenueSerializer(serializers.ModelSerializer):
             'followers_list',
             'tags', 
             'join_date',
+            'posts_on_venue',
         ]
 
 class PostSerializer(serializers.ModelSerializer):
@@ -89,15 +102,3 @@ class PostSerializer(serializers.ModelSerializer):
             'post_text',
         ]        
 
-class VenuePostSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = VenuePost
-        fields = [
-            'venue_post_id',
-            'venue_post_author',
-            'posted_to_venue',
-            'venue_post_likers',
-            'venue_post_date',
-            'venue_post_img',
-            'venue_post_text',
-        ]               

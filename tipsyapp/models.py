@@ -42,9 +42,9 @@ class User(AbstractUser):
 
 
 VENUE_TYPE = [
-    ('br', 'Brewery'),
-    ('ds', 'Distillery'),
-    ('wn', 'Winery'),
+    ('brewery', 'Brewery'),
+    ('distillery', 'Distillery'),
+    ('winery', 'Winery'),
 ]
 
 
@@ -56,9 +56,9 @@ TAG_LIST = [
 ]
 
 class Venue(models.Model):
-    BREWERY = "br"
-    DISTILLERY = 'ds'
-    WINERY = 'wn'
+    BREWERY = "brewery"
+    DISTILLERY = 'distillery'
+    WINERY = 'winery'
     
     BDW_CHOICES = [
         (BREWERY, 'Brewery'),
@@ -79,7 +79,7 @@ class Venue(models.Model):
     ]
     venue_id = models.UUIDField(primary_key=True, default= uuid.uuid4, editable=False, unique=True)
     venue_name = models.CharField(max_length=100)
-    venue_type = models.CharField(choices=BDW_CHOICES, default='br', max_length=30)
+    venue_type = models.CharField(choices=BDW_CHOICES, default='brewery', max_length=30)
     is_authenticated = models.BooleanField(default=False)
     hours_of_operation = models.TextField(max_length=300)
     web_url = models.URLField(max_length=200)
