@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 from .forms import MyUserCreationForm, MyUserChangeForm
-from .models import User, Venue, Post
+from .models import User, Venue, Post, VenuePost
 
 class MyUserAdmin(UserAdmin):
     add_form = MyUserCreationForm
@@ -32,3 +32,4 @@ class MyUserAdmin(UserAdmin):
 admin.site.register(User, MyUserAdmin)
 admin.site.register(Venue)
 admin.site.register(Post)
+admin.site.register(VenuePost)
