@@ -33,6 +33,7 @@
 1. To post: send a POST request to the /posts/ endpoint. You must be logged in to do this, and you must EITHER provide a "venue_id":"<uuid:pk>" OR "user_id":"<uuid:pk>" - this tells the database which user/venue profile you're posting on. You must provide post_img OR post_text OR both. If you don't do these things, you won't get a nice error message- instead you'll probably get a weird page response where you were expecting JSON. I'm working on making response error messages to explain what is needed from sender. 
 2. To EDIT or DELETE a post or venue: Send a PATCH or DELETE request to the /posts/<uuid:pk> endpoint or venues/<uuid:pk> . This only works if you are logged in as the user who added the post or venue.
 3. You can also "Post" a new venue as a user: You send a POST request to the /venues/ endpoint. The only required field is a venue_name. 
+4. Venues render with "posted_to_venue"- that's all the posts that have been left on that venue's page. Users render with "posted_to_user" and "posts_by"- the first is post's that have been left on their page, the second is posts they have made. 
 
 ## To **like** a post:
 1. This is the same method as 'following' above: As a logged in user, send a 'Put' request to a post's unique url. If you haven't liked that post, you will get a response saying you liked it- if you already like it, the response will tell you that you UnLiked it. 
