@@ -4,8 +4,8 @@ from .models import User, Venue, Post
 
 class PostSerializer(serializers.ModelSerializer):
     post_author = serializers.HiddenField(
-    default=serializers.CurrentUserDefault()
-)
+        default=serializers.CurrentUserDefault()
+        )
     class Meta:
         model = Post
         fields = [
