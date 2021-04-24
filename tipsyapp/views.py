@@ -11,6 +11,8 @@ class UserList(generics.ListCreateAPIView):
     queryset= User.objects.all()
     serializer_class = UserSerializer    
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+    search_fields = ['username', 'first_name', 'last_name',]
+    filter_backends = (filters.SearchFilter,)
 
 
 class UserDetail(generics.RetrieveUpdateDestroyAPIView):
@@ -37,9 +39,12 @@ class VenueList(generics.ListCreateAPIView):
     queryset= Venue.objects.all()
     serializer_class = VenueSerializer    
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+    search_fields = ['venue_name', 'city', 'state', 'zip', 'twitter_handle', 'insta_handle']
+    filter_backends = (filters.SearchFilter,)
 
     def perform_create(self, serializer):
         serializer.save(venue_added_by = self.request.user)
+
 
 class VenueDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = Venue.objects.all()
@@ -67,6 +72,8 @@ class VenueDetail(generics.RetrieveUpdateDestroyAPIView):
 class PostList(generics.ListCreateAPIView):
     queryset= Post.objects.all()
     serializer_class = PostSerializer    
+    search_fields = ['post_text',]
+    filter_backends = (filters.SearchFilter,)
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
     def perform_create(self, serializer):
