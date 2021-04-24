@@ -6,14 +6,23 @@ class PostSerializer(serializers.ModelSerializer):
     # post_author = serializers.HiddenField(
     #     default=serializers.CurrentUserDefault()
     #     )
-    post_author = serializers.ReadOnlyField(source='post_author.username')
+    post_author_username = serializers.ReadOnlyField(source='post_author.username')
+    post_author_id = serializers.ReadOnlyField(source='post_author.user_id')
+    post_author_pic = serializers.ReadOnlyField(source='post_author.prof_pic')
+    posted_to_venue_name = serializers.ReadOnlyField(source='posted_to_venue.venue_name')
+    posted_to_username = serializers.ReadOnlyField(source='posted_to_user.username')
+
     class Meta:
         model = Post
         fields = [
             'post_id',
-            'post_author',
+            'post_author_username',
+            'post_author_id',
+            'post_author_pic',
             'posted_to_user',
+            'posted_to_username',
             'posted_to_venue',
+            'posted_to_venue_name',
             'post_likers',
             'post_date',
             'post_img',
