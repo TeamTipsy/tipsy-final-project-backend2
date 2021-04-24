@@ -1,7 +1,7 @@
 from django.shortcuts import render, get_object_or_404
 from rest_framework import generics, permissions, filters
 from rest_framework.response import Response
-from .permissions import IsPostAuthorOrReadOnly
+from .permissions import IsPostAuthorOrReadOnly, IsVenueOwnerOrReadOnly
 from rest_framework.exceptions import ValidationError
 from .models import User, Venue, Post
 from .serializers import UserSerializer, VenueSerializer, PostSerializer
@@ -46,6 +46,7 @@ class VenueDetail(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = VenueSerializer
     permission_classes = [
         permissions.IsAuthenticatedOrReadOnly, 
+        IsVenueOwnerOrReadOnly
         ]
 
     def put(self, request, pk):
