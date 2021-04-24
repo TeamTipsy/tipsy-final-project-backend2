@@ -12,9 +12,7 @@ class MyUserCreationForm(UserCreationForm):
             'bio_text',  
             'prof_pic', 
             'star_user',  
-            'users_following_num', 
             'users_following_list',
-            'venues_following_num' 
             )
 
 class MyUserChangeForm(UserChangeForm):
@@ -27,6 +25,5 @@ class MyUserChangeForm(UserChangeForm):
             'bio_text',  
             'prof_pic', 
             'star_user',  
-            'users_following_num', 
-            'venues_following_num'
+            'users_following_list', 
             )

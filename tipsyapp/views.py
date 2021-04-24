@@ -1,10 +1,16 @@
 from django.shortcuts import render, get_object_or_404
 from rest_framework import generics, permissions, filters
 from rest_framework.response import Response
-from .permissions import IsOwnerOrReadOnly
+from .permissions import IsPostAuthorOrReadOnly, IsVenueOwnerOrReadOnly
 from rest_framework.exceptions import ValidationError
-from .models import User, Venue, Post, VenuePost
-from .serializers import UserSerializer, VenueSerializer, PostSerializer, VenuePostSerializer
+from .models import User, Venue, Post
+from .serializers import UserSerializer, VenueSerializer, PostSerializer
+
+
+class UserList(generics.ListCreateAPIView):
+    queryset= User.objects.all()
+    serializer_class = UserSerializer    
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
 
 class UserDetail(generics.RetrieveUpdateDestroyAPIView):
@@ -12,7 +18,6 @@ class UserDetail(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = UserSerializer
     permission_classes = [
         permissions.IsAuthenticatedOrReadOnly, 
-        IsOwnerOrReadOnly,
         ]
         
     def put(self, request, pk):
@@ -26,10 +31,6 @@ class UserDetail(generics.RetrieveUpdateDestroyAPIView):
             request.user.users_following_list.remove(obj.user_id)
             return Response({'detail': 'User Unfollowed'})    
 
-class UserList(generics.ListCreateAPIView):
-    queryset= User.objects.all()
-    serializer_class = UserSerializer    
-    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
 
 class VenueList(generics.ListCreateAPIView):
@@ -37,14 +38,15 @@ class VenueList(generics.ListCreateAPIView):
     serializer_class = VenueSerializer    
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
-
+    def perform_create(self, serializer):
+        serializer.save(venue_added_by = self.request.user)
 
 class VenueDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = Venue.objects.all()
     serializer_class = VenueSerializer
     permission_classes = [
         permissions.IsAuthenticatedOrReadOnly, 
-        IsOwnerOrReadOnly,
+        IsVenueOwnerOrReadOnly
         ]
 
     def put(self, request, pk):
@@ -67,13 +69,15 @@ class PostList(generics.ListCreateAPIView):
     serializer_class = PostSerializer    
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
+    def perform_create(self, serializer):
+        serializer.save(post_author = self.request.user)
 
 class PostDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = Post.objects.all()
     serializer_class = PostSerializer
     permission_classes = [
         permissions.IsAuthenticatedOrReadOnly, 
-        IsOwnerOrReadOnly,
+        IsPostAuthorOrReadOnly,
         ]
 
     def put(self, request, pk):
@@ -91,58 +95,3 @@ class PostDetail(generics.RetrieveUpdateDestroyAPIView):
         return Response({'detail': 'something went wrong with your follow request. are you passing a token?'})
 
 
-class VenueList(generics.ListCreateAPIView):
-    queryset= Venue.objects.all()
-    serializer_class = VenueSerializer    
-    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
-
-
-class VenueDetail(generics.RetrieveUpdateDestroyAPIView):
-    queryset = Venue.objects.all()
-    serializer_class = VenueSerializer
-    permission_classes = [
-        permissions.IsAuthenticatedOrReadOnly, 
-        IsOwnerOrReadOnly,
-        ]
-
-    def put(self, request, pk):
-        obj = Venue.objects.get(venue_id=pk)
-        if request.user not in obj.venue_likers.all():
-            obj.venue_likers.add(request.user)
-            request.user.venues_liked.add(obj.venue_id)
-            return Response({'detail': 'Venue Liked'})
-        elif request.user in obj.venue_likers.all():
-            obj.venue_likers.remove(request.user)
-            request.user.venues_liked.remove(obj.venue_id)
-            return Response({'detail': 'Venue Unliked'})
-            
-
-        return Response({'detail': 'something went wrong with your follow request. are you passing a token?'})        
-
-class VenuePostList(generics.ListCreateAPIView):
-    queryset= VenuePost.objects.all()
-    serializer_class = VenuePostSerializer    
-    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
-
-
-class VenuePostDetail(generics.RetrieveUpdateDestroyAPIView):
-    queryset = VenuePost.objects.all()
-    serializer_class = VenuePostSerializer
-    permission_classes = [
-        permissions.IsAuthenticatedOrReadOnly, 
-        IsOwnerOrReadOnly,
-        ]
-
-    def put(self, request, pk):
-        obj = VenuePost.objects.get(venue_post_id=pk)
-        if request.user not in obj.venue_post_likers.all():
-            obj.venue_post_likers.add(request.user)
-            request.user.venue_posts_liked.add(obj.venue_post_id)
-            return Response({'detail': 'Post Liked'})
-        elif request.user in obj.venue_post_likers.all():
-            obj.venue_post_likers.remove(request.user)
-            request.user.venue_posts_liked.remove(obj.venue_post_id)
-            return Response({'detail': 'Post Unliked'})
-            
-
-        return Response({'detail': 'something went wrong with your follow request. are you passing a token?'})        
