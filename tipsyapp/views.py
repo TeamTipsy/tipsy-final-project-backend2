@@ -38,8 +38,8 @@ class VenueList(generics.ListCreateAPIView):
     serializer_class = VenueSerializer    
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
-    # def perform_create(self, serializer):
-    #     serializer.save(venue_added_by = self.request.user)
+    def perform_create(self, serializer):
+        serializer.save(venue_added_by = self.request.user)
 
 class VenueDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = Venue.objects.all()

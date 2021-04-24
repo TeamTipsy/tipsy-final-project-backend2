@@ -3,9 +3,10 @@ from .models import User, Venue, Post
 
 
 class PostSerializer(serializers.ModelSerializer):
-    post_author = serializers.HiddenField(
-        default=serializers.CurrentUserDefault()
-        )
+    # post_author = serializers.HiddenField(
+    #     default=serializers.CurrentUserDefault()
+    #     )
+    post_author = serializers.ReadOnlyField(source='post_author.username')
     class Meta:
         model = Post
         fields = [
@@ -93,9 +94,8 @@ class VenueSerializer(serializers.ModelSerializer):
     # posted_to_venue = serializers.PrimaryKeyRelatedField(
     #     many=True, queryset=Post.objects.all()
     #     ) # see comment for same code under userserializer
-    venue_added_by = serializers.HiddenField(
-        default=serializers.CurrentUserDefault()
-        )
+    venue_added_by = serializers.ReadOnlyField(source='venue_added_by.username')
+        
         
     class Meta:
         model = Venue
@@ -103,8 +103,8 @@ class VenueSerializer(serializers.ModelSerializer):
             'venue_id',
             'venue_name',
             'venue_type',
-            'venue_info',
             'venue_added_by',
+            'venue_info',
             'is_authenticated',
             'phone_num',
             'prof_pic',
