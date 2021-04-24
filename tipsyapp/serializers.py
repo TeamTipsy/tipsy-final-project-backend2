@@ -1,8 +1,11 @@
 from rest_framework import serializers, fields
-from .models import User, Venue, Post, VenuePost
+from .models import User, Venue, Post
 
 
 class UserSerializer(serializers.ModelSerializer):
+    posts_from_user = serializers.PrimaryKeyRelatedField(
+        many=True, queryset=Post.objects.all())
+
     class Meta:
         model = User
         fields = [
@@ -26,7 +29,8 @@ class UserSerializer(serializers.ModelSerializer):
             'venues_following_num', 
             'venues_following_list', 
             'posts_liked',
-            'venue_posts_liked',
+            'posts_from_user',
+            'posts_on_user',
         ]
 
 
@@ -55,23 +59,11 @@ class VenueInfoSerializer(serializers.ModelSerializer):
             'insta_handle',    
             'fb_link', 
             'venue_address', 
-        ]
-class VenuePostSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = VenuePost
-        fields = [
-            'venue_post_id',
-            'venue_post_author',
-            'posted_to_venue',
-            'venue_post_likers',
-            'venue_post_date',
-            'venue_post_img',
-            'venue_post_text',
-        ]               
+        ]           
 
 class VenueSerializer(serializers.ModelSerializer):
     venue_info = VenueInfoSerializer(source='*', read_only=True)
-    posts_on_venue = VenuePostSerializer(many=True,  read_only=True)
+    # posts_on_venue = PostSerializer(many=True,  read_only=True)
     class Meta:
         model = Venue
         fields = [
@@ -96,6 +88,7 @@ class PostSerializer(serializers.ModelSerializer):
             'post_id',
             'post_author',
             'posted_to_user',
+            'posted_to_venue',
             'post_likers',
             'post_date',
             'post_img',
