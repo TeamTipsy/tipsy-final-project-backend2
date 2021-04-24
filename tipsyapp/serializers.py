@@ -66,37 +66,37 @@ class UserSerializer(serializers.ModelSerializer):
         ]
 
 
-class VenueAddressSerializer(serializers.ModelSerializer):
+# class VenueAddressSerializer(serializers.ModelSerializer):
     
-    class Meta:
-        model = Venue
-        fields = [
-            'street_address',
-            'city',
-            'state',
-            'zip',
-        ]
+#     class Meta:
+#         model = Venue
+#         fields = [
+#             'street_address',
+#             'city',
+#             'state',
+#             'zip',
+#         ]
 
 
-class VenueInfoSerializer(serializers.ModelSerializer):
-    venue_address = VenueAddressSerializer(source='*', read_only=True)
+# class VenueInfoSerializer(serializers.ModelSerializer):
+#     venue_address = VenueAddressSerializer(source='*', read_only=True)
     
-    class Meta:
-        model = Venue
-        fields = [
-            'phone_num',
-            'hours_of_operation',
-            'web_url',
-            'email',
-            'twitter_handle',    
-            'insta_handle',    
-            'fb_link', 
-            'venue_address', 
-        ]           
+#     class Meta:
+#         model = Venue
+#         fields = [
+#             'phone_num',
+#             'hours_of_operation',
+#             'web_url',
+#             'email',
+#             'twitter_handle',    
+#             'insta_handle',    
+#             'fb_link', 
+#             'venue_address', 
+#         ]           
 
 
 class VenueSerializer(serializers.ModelSerializer):
-    venue_info = VenueInfoSerializer(source='*', read_only=True)
+    # venue_info = VenueInfoSerializer(source='*', read_only=True)
     posted_to_venue = PostSerializer(
         many=True, read_only=True
         )
@@ -112,8 +112,19 @@ class VenueSerializer(serializers.ModelSerializer):
             'venue_id',
             'venue_name',
             'venue_type',
+            'phone_num',
+            'hours_of_operation',
+            'web_url',
+            'email',
+            'twitter_handle',    
+            'insta_handle',    
+            'fb_link', 
+            'street_address',
+            'city',
+            'state',
+            'zip',
             'venue_added_by',
-            'venue_info',
+            # 'venue_info',
             'is_authenticated',
             'prof_pic',
             'followers_list',
