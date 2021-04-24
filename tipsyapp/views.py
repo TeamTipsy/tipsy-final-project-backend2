@@ -76,7 +76,7 @@ class PostDetail(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = PostSerializer
     permission_classes = [
         permissions.IsAuthenticatedOrReadOnly, 
-        IsPostAuthorOrReadOnly,
+        # IsPostAuthorOrReadOnly,
         ]
 
     def put(self, request, pk):
