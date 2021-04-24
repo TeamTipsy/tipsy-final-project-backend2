@@ -7,6 +7,12 @@ from .models import User, Venue, Post
 from .serializers import UserSerializer, VenueSerializer, PostSerializer
 
 
+class UserList(generics.ListCreateAPIView):
+    queryset= User.objects.all()
+    serializer_class = UserSerializer    
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+
+
 class UserDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = User.objects.all()
     serializer_class = UserSerializer
@@ -26,10 +32,6 @@ class UserDetail(generics.RetrieveUpdateDestroyAPIView):
             request.user.users_following_list.remove(obj.user_id)
             return Response({'detail': 'User Unfollowed'})    
 
-class UserList(generics.ListCreateAPIView):
-    queryset= User.objects.all()
-    serializer_class = UserSerializer    
-    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
 
 class VenueList(generics.ListCreateAPIView):
@@ -37,14 +39,15 @@ class VenueList(generics.ListCreateAPIView):
     serializer_class = VenueSerializer    
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
-
+    def perform_create(self, serializer):
+        serializer.save(venue_added_by = self.request.user)
 
 class VenueDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = Venue.objects.all()
     serializer_class = VenueSerializer
     permission_classes = [
         permissions.IsAuthenticatedOrReadOnly, 
-        IsOwnerOrReadOnly,
+        # IsOwnerOrReadOnly,
         ]
 
     def put(self, request, pk):
@@ -67,6 +70,8 @@ class PostList(generics.ListCreateAPIView):
     serializer_class = PostSerializer    
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
+    def perform_create(self, serializer):
+        serializer.save(post_author = self.request.user)
 
 class PostDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = Post.objects.all()

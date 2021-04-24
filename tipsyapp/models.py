@@ -70,6 +70,7 @@ class Venue(models.Model):
     venue_id = models.UUIDField(primary_key=True, default= uuid.uuid4, editable=False, unique=True)
     venue_name = models.CharField(max_length=100)
     venue_type = models.CharField(choices=BDW_CHOICES, default='brewery', max_length=30)
+    venue_added_by = models.ForeignKey(User, on_delete=models.CASCADE, related_name="venue_added_by")
     is_authenticated = models.BooleanField(default=False)
     hours_of_operation = models.TextField(max_length=300)
     web_url = models.URLField(max_length=200)
@@ -82,7 +83,7 @@ class Venue(models.Model):
     city = models.CharField(max_length=150)
     state = models.CharField(max_length=150)
     zip = models.DecimalField(max_digits=5, decimal_places=0, blank=True, null=True)
-    prof_pic = models.URLField(max_length=300)
+    prof_pic = models.URLField(max_length=300, blank=True, null=True)
     followers_list = models.ManyToManyField('User', related_name="venue_followers", blank=True)
     tags = models.CharField(choices=TAG_CHOICES, blank=True, null=True, max_length=103)
     join_date = models.DateTimeField(auto_now_add=True)
@@ -96,7 +97,7 @@ class Venue(models.Model):
 
 class Post(models.Model):
     post_id = models.UUIDField(primary_key=True, default= uuid.uuid4, editable=False, unique=True)
-    post_author = models.ForeignKey(User, on_delete=models.CASCADE, related_name="post_author")
+    post_author = models.ForeignKey(User, on_delete=models.CASCADE, related_name="posts_by")
     posted_to_user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="posted_to_user", blank=True, null=True)
     posted_to_venue = models.ForeignKey(Venue, on_delete=models.CASCADE, related_name="posted_to_venue", blank=True, null=True)
     post_likers = models.ManyToManyField('User', related_name="post_likers", blank = True)
@@ -119,7 +120,24 @@ class Post(models.Model):
                         posted_to_venue__isnull=False,
                     )
                 ),
-            )
+            ),
+            models.CheckConstraint(
+                name="%(app_label)s_%(class)s_post_text_ANDOR_img",
+                check=(
+                    models.Q(
+                        post_img__isnull=False,
+                        post_text__isnull=False,
+                    )
+                    | models.Q(
+                        post_img__isnull=True,
+                        post_text__isnull=False,
+                    )
+                    | models.Q(
+                        post_img__isnull=False,
+                        post_text__isnull=True,
+                    )
+                ),
+            )            
         ]        
 
     def __str__(self):
