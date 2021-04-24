@@ -106,7 +106,6 @@ class VenueSerializer(serializers.ModelSerializer):
             'venue_added_by',
             'venue_info',
             'is_authenticated',
-            'phone_num',
             'prof_pic',
             'followers_list',
             'tags', 
