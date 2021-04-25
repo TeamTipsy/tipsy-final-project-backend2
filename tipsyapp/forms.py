@@ -27,3 +27,14 @@ class MyUserChangeForm(UserChangeForm):
             'star_user',  
             'users_following_list', 
             )
+
+
+class Upload(forms.ModelForm):
+
+    class Meta:
+        model = User
+        fields = (
+            'username', 
+            'prof_pic',
+            'prof_pic_img',
+        )
