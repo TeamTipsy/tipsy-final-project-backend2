@@ -15,6 +15,9 @@ django-debug-toolbar = "*"
 django-extensions = "*"
 djoser = "*"
 django-annoying = "*"
+pillow = "*"
+boto3 = "*"
+django-storages = "*"
 
 [dev-packages]
 

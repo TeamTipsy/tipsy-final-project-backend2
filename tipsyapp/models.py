@@ -45,6 +45,9 @@ TAG_LIST = [
     ('4', 'Large Variety of Draft Beers'),
 ]
 
+def user_directory_path(instance, filename):
+    return 'posts/{0}/{1}'.format(instance.user.user_id, filename)
+
 class Venue(models.Model):
     BREWERY = "brewery"
     DISTILLERY = 'distillery'

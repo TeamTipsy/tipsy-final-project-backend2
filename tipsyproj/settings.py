@@ -54,6 +54,7 @@ INSTALLED_APPS = [
     'tipsyapp',
     'corsheaders',
     'annoying',
+    'storages',
 ]
 
 MIDDLEWARE = [
