@@ -5,7 +5,7 @@ import uuid
 
 
 def user_directory_path(instance, filename):
-    return 'profile/{0}/{1}'.format(instance.user.user_id, filename)
+    return 'profile/{0}/{1}'.format(instance.user_id, filename)
 
     
 class User(AbstractUser):
