@@ -1,5 +1,5 @@
 from django.shortcuts import render, get_object_or_404
-from .forms import MyUserCreationForm, MyUserChangeForm, Upload
+from .forms import MyUserCreationForm, MyUserChangeForm, Upload, VenueUpload, PostUpload
 from django.views.generic.edit import FormView
 from rest_framework import generics, permissions, filters
 from rest_framework.response import Response
@@ -114,3 +114,24 @@ class Upload(FormView):
         print(form.cleaned_data)
         return super().form_valid(form)
 
+
+class VenueUpload(FormView):
+    template_name ='index.html'
+    form_class = VenueUpload
+    success_url = '/'
+
+    def form_valid(self, form):
+        form.save()
+        print(form.cleaned_data)
+        return super().form_valid(form)
+
+
+class PostUpload(FormView):
+    template_name ='index.html'
+    form_class = PostUpload
+    success_url = '/'
+
+    def form_valid(self, form):
+        form.save()
+        print(form.cleaned_data)
+        return super().form_valid(form)

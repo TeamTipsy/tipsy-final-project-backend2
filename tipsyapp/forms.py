@@ -1,6 +1,6 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm, UserChangeForm
-from .models import User
+from .models import User, Venue, Post
 
 class MyUserCreationForm(UserCreationForm):
 
@@ -36,4 +36,24 @@ class Upload(forms.ModelForm):
         model = User
         fields = (
             'prof_pic_img',
+        )
+
+
+class VenueUpload(forms.ModelForm):
+
+    class Meta:
+        model = Venue
+        fields = (
+            'venue_img',
+            'venue_img_caption',
+        )
+
+
+class PostUpload(forms.ModelForm):
+
+    class Meta:
+        model = Post
+        fields = (
+            'post_img_file',
+            'post_img_caption',
         )

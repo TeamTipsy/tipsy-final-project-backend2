@@ -53,7 +53,7 @@ TAG_LIST = [
 ]
 
 def venue_directory_path(instance, filename):
-    return 'venue/{0}/{1}'.format(instance.user.user_id, filename)
+    return 'venue/{0}/{1}'.format(instance.venue_id, filename)
 
 class Venue(models.Model):
 
@@ -109,7 +109,7 @@ class Venue(models.Model):
         return f'{self.venue_name}'
 
 def post_directory_path(instance, filename):
-    return 'post/{0}/{1}'.format(instance.user.user_id, filename)
+    return 'post/{0}/{1}'.format(instance.post_id, filename)
 
 class Post(models.Model):
 
