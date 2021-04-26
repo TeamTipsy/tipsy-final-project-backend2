@@ -11,6 +11,7 @@ class MyUserCreationForm(UserCreationForm):
             'state', 
             'bio_text',  
             'prof_pic', 
+            'prof_pic_img',
             'star_user',  
             'users_following_list',
             )

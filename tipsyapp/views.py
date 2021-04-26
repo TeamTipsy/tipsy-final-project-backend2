@@ -9,6 +9,9 @@ from .models import User, Venue, Post
 from .serializers import UserSerializer, VenueSerializer, PostSerializer
 
 
+def successpage(request):
+    return render(request, "/successpage.html")
+
 class UserList(generics.ListCreateAPIView):
     queryset= User.objects.all()
     serializer_class = UserSerializer    
@@ -107,7 +110,7 @@ class PostDetail(generics.RetrieveUpdateDestroyAPIView):
 class Upload(FormView):
     template_name = 'index.html'
     form_class = Upload
-    success_url = '/'
+    success_url = 'successpage/'
 
     def form_valid(self, form):
         form.save()

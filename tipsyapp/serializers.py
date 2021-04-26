@@ -55,6 +55,7 @@ class UserSerializer(serializers.ModelSerializer):
             'state', 
             'bio_text',  
             'prof_pic', 
+            'prof_pic_img', 
             'join_date',
             'star_user',  
             'users_following_list', 

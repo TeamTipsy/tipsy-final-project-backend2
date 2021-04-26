@@ -18,6 +18,7 @@ django-annoying = "*"
 pillow = "*"
 boto3 = "*"
 django-storages = "*"
+pipfile = "*"
 
 [dev-packages]
 
