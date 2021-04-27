@@ -3,7 +3,7 @@ from .forms import MyUserCreationForm, MyUserChangeForm, Upload, VenueUpload, Po
 from django.views.generic.edit import FormView
 from rest_framework import generics, permissions, filters
 from rest_framework.response import Response
-from .permissions import IsPostAuthorOrReadOnly, IsVenueOwnerOrReadOnly
+from .permissions import IsPostAuthorOrReadOnly, IsVenueOwnerOrReadOnly, IsUserOrReadOnly
 from rest_framework.exceptions import ValidationError
 from .models import User, Venue, Post
 from .serializers import UserSerializer, VenueSerializer, PostSerializer
@@ -22,6 +22,7 @@ class UserDetail(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = UserSerializer
     permission_classes = [
         permissions.IsAuthenticatedOrReadOnly, 
+        IsUserOrReadOnly
         ]
         
     def put(self, request, pk):
