@@ -8,25 +8,29 @@ class MyUserAdmin(UserAdmin):
     form = MyUserChangeForm
     model = User
     list_display = [
+        'username', #dev only
         'city',
         'state', 
         'bio_text',  
         'prof_pic', 
+        'prof_pic_img',
         'star_user',  
     ]
     fieldsets = UserAdmin.fieldsets + (
-            (None, {'fields': (
+            (None, {'fields': (    
             'city',
             'state', 
             'bio_text',  
             'prof_pic', 
+            'prof_pic_img',
             'star_user',  
             'users_following_list', 
-            'venues_following_list',)}),
-    ) #this will allow us to change these fields in admin module
+            'venues_following_list')}),
+    ) #this will allow to change these fields in admin module
 
 
 
 admin.site.register(User, MyUserAdmin)
 admin.site.register(Venue)
 admin.site.register(Post)
+

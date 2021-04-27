@@ -1,4 +1,6 @@
 from django.shortcuts import render, get_object_or_404
+from .forms import MyUserCreationForm, MyUserChangeForm, Upload, VenueUpload, PostUpload
+from django.views.generic.edit import FormView
 from rest_framework import generics, permissions, filters
 from rest_framework.response import Response
 from .permissions import IsPostAuthorOrReadOnly, IsVenueOwnerOrReadOnly
@@ -102,3 +104,34 @@ class PostDetail(generics.RetrieveUpdateDestroyAPIView):
         return Response({'detail': 'something went wrong with your follow request. are you passing a token?'})
 
 
+class Upload(FormView):
+    template_name = 'index.html'
+    form_class = Upload
+    success_url = '/'
+
+    def form_valid(self, form):
+        form.save()
+        print(form.cleaned_data)
+        return super().form_valid(form)
+
+
+class VenueUpload(FormView):
+    template_name ='index.html'
+    form_class = VenueUpload
+    success_url = '/'
+
+    def form_valid(self, form):
+        form.save()
+        print(form.cleaned_data)
+        return super().form_valid(form)
+
+
+class PostUpload(FormView):
+    template_name ='index.html'
+    form_class = PostUpload
+    success_url = '/'
+
+    def form_valid(self, form):
+        form.save()
+        print(form.cleaned_data)
+        return super().form_valid(form)
