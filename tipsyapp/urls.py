@@ -6,6 +6,7 @@ from .views import Upload, VenueUpload, PostUpload
 app_name='tipsyapp'
 
 urlpatterns = [
+    path('checkins/', views.CheckInList.as_view(), name='user-list'),
     path('users/', views.UserList.as_view(), name='user-list'),
     path('users/<uuid:pk>/', views.UserDetail.as_view(), name='user-detail'),
     path('venues/', views.VenueList.as_view(), name='venue-list'),

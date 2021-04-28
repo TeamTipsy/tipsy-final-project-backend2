@@ -5,8 +5,8 @@ from rest_framework import generics, permissions, filters
 from rest_framework.response import Response
 from .permissions import IsPostAuthorOrReadOnly, IsVenueOwnerOrReadOnly
 from rest_framework.exceptions import ValidationError
-from .models import User, Venue, Post
-from .serializers import UserSerializer, VenueSerializer, PostSerializer
+from .models import User, Venue, Post, CheckIn
+from .serializers import UserSerializer, VenueSerializer, PostSerializer, CheckInSerializer
 from .decorators import unauthenticated_user, allowed_users
 
 
@@ -35,7 +35,6 @@ class UserDetail(generics.RetrieveUpdateDestroyAPIView):
             obj.users_followed_by_list.remove(request.user)
             request.user.users_following_list.remove(obj.user_id)
             return Response({'detail': 'User Unfollowed'})    
-
 
 
 class VenueList(generics.ListCreateAPIView):
@@ -67,9 +66,12 @@ class VenueDetail(generics.RetrieveUpdateDestroyAPIView):
             obj.followers_list.remove(request.user)
             request.user.venues_following_list.remove(obj.venue_id)
             return Response({'detail': 'Venue Unfollowed'})
-            
-
         return Response({'detail': 'something went wrong with your follow request. are you passing a token?'})
+
+
+# class CheckInDetail(generics.ListCreateAPIView):
+    
+
 
 
 class PostList(generics.ListCreateAPIView):
@@ -81,6 +83,7 @@ class PostList(generics.ListCreateAPIView):
 
     def perform_create(self, serializer):
         serializer.save(post_author = self.request.user)
+
 
 class PostDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = Post.objects.all()
@@ -100,9 +103,25 @@ class PostDetail(generics.RetrieveUpdateDestroyAPIView):
             obj.post_likers.remove(request.user)
             request.user.posts_liked.remove(obj.post_id)
             return Response({'detail': 'Post Unliked'})
-            
-
         return Response({'detail': 'something went wrong with your follow request. are you passing a token?'})
+
+
+class CheckInList(generics.ListCreateAPIView):
+    # pagination_class = CheckInPagination
+    queryset= CheckIn.objects.all()
+    serializer_class = CheckInSerializer    
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+
+    def perform_create(self, serializer):
+        serializer.save(checkin_user = self.request.user)
+
+
+class CheckInDetail(generics.RetrieveUpdateDestroyAPIView):
+    queryset = CheckIn.objects.all()
+    serializer_class = CheckInSerializer
+    permission_classes = [
+        permissions.IsAuthenticatedOrReadOnly, 
+        ]
 
 
 class Upload(FormView):

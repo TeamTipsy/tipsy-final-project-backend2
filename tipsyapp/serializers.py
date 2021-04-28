@@ -1,6 +1,9 @@
 from rest_framework import serializers, fields
-from .models import User, Venue, Post
+from .models import CheckIn, User, Venue, Post, CheckIn
 from .models import TAG_LIST
+
+
+
 
 
 class PostSerializer(serializers.ModelSerializer):
@@ -31,6 +34,22 @@ class PostSerializer(serializers.ModelSerializer):
         ]        
 
 
+class CheckInSerializer(serializers.ModelSerializer):
+    checkin_user_id = serializers.ReadOnlyField(source='checkin_user.user_id')
+    checkin_username = serializers.ReadOnlyField(source='checkin_user.username')
+    # checkedin_venuename = checkedin_venue
+   
+    class Meta:
+        model = CheckIn
+        fields = [
+            'checkin_user_id',
+            'checkin_username',
+            'checkedin_venue',
+            'checkin_time',
+        ]
+
+
+
 class UserSerializer(serializers.ModelSerializer):
     posts_by = PostSerializer(
         many=True, read_only=True
@@ -38,6 +57,13 @@ class UserSerializer(serializers.ModelSerializer):
     posted_to_user = PostSerializer(
         many=True, read_only=True
         )
+
+    # checked_in_at = CheckInSerializer(
+    #     many=True, read_only=True
+    #     )    
+    checkin_user = CheckInSerializer(
+        many=True, read_only=True
+        )    
     # posts_by = serializers.PrimaryKeyRelatedField(
     #     many=True, queryset=Post.objects.all()
     #     ) # Leaving this here in case we want it- this renders pk of posts instead of posts themselves
@@ -64,40 +90,20 @@ class UserSerializer(serializers.ModelSerializer):
             'posts_liked',
             'posts_by',
             'posted_to_user',
+            'checkin_user',
         ]
-
-
-# class VenueAddressSerializer(serializers.ModelSerializer):
-    
-#     class Meta:
-#         model = Venue
-#         fields = [
-#             'street_address',
-#             'city',
-#             'state',
-#             'zip',
-#         ]
-
-
-# class VenueInfoSerializer(serializers.ModelSerializer):
-#     venue_address = VenueAddressSerializer(source='*', read_only=True)
-    
-#     class Meta:
-#         model = Venue
-#         fields = [
-#             'phone_num',
-#             'hours_of_operation',
-#             'web_url',
-#             'email',
-#             'twitter_handle',    
-#             'insta_handle',    
-#             'fb_link', 
-#             'venue_address', 
-#         ]           
 
 
 class VenueSerializer(serializers.ModelSerializer):
     # venue_info = VenueInfoSerializer(source='*', read_only=True)
+
+    checkedin_venue = CheckInSerializer(
+        many=True, read_only=True
+        )
+    # checkins = CheckInSerializer(
+    #     many=True, read_only=True
+    #     )
+
     posted_to_venue = PostSerializer(
         many=True, read_only=True
         )
@@ -133,6 +139,7 @@ class VenueSerializer(serializers.ModelSerializer):
             'tags', 
             'join_date',
             'posted_to_venue',
+            'checkedin_venue',
         ]
 
 
