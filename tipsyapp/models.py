@@ -34,7 +34,7 @@ class User(AbstractUser):
     posts_liked = models.ManyToManyField('Post', related_name="posts_liked", blank = True)
 
     class Meta:
-        ordering=['join_date']
+        ordering=['-join_date']
 
     def __str__(self):
         return f'{self.username}'
@@ -139,7 +139,7 @@ class Venue(models.Model):
     join_date = models.DateTimeField(auto_now_add=True)
     
     class Meta:
-        ordering=['join_date']
+        ordering=['-join_date']
 
     def __str__(self):
         return f'{self.venue_name}'
@@ -160,7 +160,7 @@ class Post(models.Model):
 
 
     class Meta:
-        ordering=['post_date']
+        ordering=['-post_date']
         constraints = [
             models.CheckConstraint(
                 name="%(app_label)s_%(class)s_post_on_user_OR_venue",
@@ -208,4 +208,9 @@ class CheckIn(models.Model):
         related_name="checkedin_venue")
     checkin_time = models.DateTimeField(auto_now_add=True)
 
+    class Meta:
+        ordering=['-checkin_time']
+
+    def __str__(self):
+        return f'check in at venue {self.checkedin_venue} user at {self.checkin_time}'
 

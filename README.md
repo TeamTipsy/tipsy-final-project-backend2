@@ -6,24 +6,28 @@
 **Remember, if adding JSON data using Insomnia, to use " instead of '.**
 
 
--Create a user: (https://tipsy-backend.herokuapp.com/auth/users/)
-    **REQUIRED FIELDS**
-    username, password, email 
-
--Get token: (https://tipsy-backend.herokuapp.com/auth/token/login/)
-
+- Create a user: (https://tipsy-backend.herokuapp.com/auth/users/)
+     **REQUIRED FIELDS**
+     username, password, email 
+ 
+- Get token: (https://tipsy-backend.herokuapp.com/auth/token/login/)
+ 
 - https://tipsy-backend.herokuapp.com/auth/users/me/  - get the username, email, and user_id of user currently logged in (requires token authentication).
+ 
+- (https://tipsy-backend.herokuapp.com/users/<uuid:pk>/) - ***~Development only~***
+This is the endpoint for a users 'profile' page. 
+ 
+- (https://tipsy-backend.herokuapp.com/venues/) - This is the endpoint for the list of venues. 
+ 
+- (https://tipsy-backend.herokuapp.com/venues/<uuid:pk>/) - This is the endpoint for the venue detail page. 
+ 
+ 
+- (https://tipsy-backend.herokuapp.com/posts/) - This is the endpoint for the list of user posts (comments/pics left on a user's page). 
+ 
+- (https://tipsy-backend.herokuapp.com/posts/<uuid:pk>/) - This is the endpoint for the user post detail page- a specific comment/image left on a user's page. 
 
--(https://tipsy-backend.herokuapp.com/users/<uuid:pk>/) - This is the endpoint for a users 'profile' page. 
-
--(https://tipsy-backend.herokuapp.com/venues/) - This is the endpoint for the list of venues. 
-
--(https://tipsy-backend.herokuapp.com/venues/<uuid:pk>/) - This is the endpoint for the venue detail page. 
-
-
--(https://tipsy-backend.herokuapp.com/posts/) - This is the endpoint for the list of user posts (comments/pics left on a user's page). 
-
--(https://tipsy-backend.herokuapp.com/posts/<uuid:pk>/) - This is the endpoint for the user post detail page- a specific comment/image left on a user's page. 
+- (https://tipsy-backend.herokuapp.com/checkins/) - ***~Development only~*** 
+ This is the endpoint for the list of all checkins. We won't have a front end page for this- it just helps troubleshooting during development. 
 
 ## To search:
 Right now, search is split- each list view (/posts/, /users/, /venues/) can be appended with "?search= " + {query term- whatever you want} and this query term will be searched on that list. 
@@ -38,5 +42,8 @@ Right now, search is split- each list view (/posts/, /users/, /venues/) can be a
 3. You can also "Post" a new venue as a user: You send a POST request to the /venues/ endpoint. The only required field is a venue_name. 
 4. Venues render with "posted_to_venue"- that's all the posts that have been left on that venue's page. Users render with "posted_to_user" and "posts_by"- the first is post's that have been left on their page, the second is posts they have made. 
 
-## To **like** a post:
+### To **like** a post:
 1. This is the same method as 'following' above: As a logged in user, send a 'Put' request to a post's unique url. If you haven't liked that post, you will get a response saying you liked it- if you already like it, the response will tell you that you UnLiked it. 
+
+## Checking in to a venue: 
+You must be logged in. Send a "post" request with {"checkedin_venue":"<venue's uuid>"} to the /checkins/ endpoint. You can see all checkins at that endpoint, but we won't make a page of them for the user. The relevant info is attached at the bottom of the user (places they've checked in most recently) and venue (users who've most recently checked in there). NOTE: We just got the basic model working. It is easy for us to add username/venue name if you want it (right now it's just uuids), and we are thinking of ways to limit how many can be made per day/how many render in the API, since right now they get cluttered quickly. 
