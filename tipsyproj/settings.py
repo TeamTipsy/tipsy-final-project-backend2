@@ -56,6 +56,7 @@ INSTALLED_APPS = [
     'corsheaders',
     'annoying',
     'storages',
+    'multiselectfield',
 ]
 
 MIDDLEWARE = [

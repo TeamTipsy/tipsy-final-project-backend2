@@ -1,5 +1,6 @@
 from rest_framework import serializers, fields
 from .models import User, Venue, Post
+from .models import TAG_LIST
 
 
 class PostSerializer(serializers.ModelSerializer):
@@ -104,6 +105,7 @@ class VenueSerializer(serializers.ModelSerializer):
     #     many=True, queryset=Post.objects.all()
     #     ) # see comment for same code under userserializer
     venue_added_by = serializers.ReadOnlyField(source='venue_added_by.username')
+    tags = fields.MultipleChoiceField(choices=TAG_LIST)
         
         
     class Meta:

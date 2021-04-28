@@ -2,7 +2,7 @@ from django.db import models
 from django.db.models import Q
 from django.contrib.auth.models import AbstractUser
 import uuid
-
+from multiselectfield import MultiSelectField
 
 def user_directory_path(instance, filename):
     return 'profile/{0}/{1}'.format(instance.user_id, filename)
@@ -46,10 +46,42 @@ VENUE_TYPE = [
 
 
 TAG_LIST = [
-    ('1', 'Outside Seating/Patio'),
+    ('1', 'Outdoor Seating/Patio'),
     ('2', 'Pet Friendly'),
-    ('3', 'Great Appetizers'),
+    ('3', 'Appetizers'),
     ('4', 'Large Variety of Draft Beers'),
+    ('5', 'Cider Options'),
+    ('6', 'Wine Options'),
+    ('7', 'Trivia'),
+    ('8', 'Live Entertainment'),
+    ('9', 'Knowledgable Staff'),
+    ('10', 'Flea Markets'),
+    ('11', 'Beer Options'),
+    ('12', 'Food Trucks'),
+    ('13', 'MUST VISIT!'),
+    ('14', 'Friendly Staff'),
+    ('15', 'Indoor Seating'),
+    ('16', 'Cool Vibes'),
+    ('17', 'Hazy IPAs'),
+    ('18', 'NE IPAs'),
+    ('19', 'Sours/Goses'),
+    ('20', 'Saisons'),
+    ('21', 'Lagers'),
+    ('22', 'Amber/Red Ales'),
+    # ('23', ''),
+    # ('24', ''),
+    # ('25', ''),
+    # ('26', ''),
+    # ('27', ''),
+    # ('28', ''),
+    # ('29', ''),
+    # ('30', ''),
+    # ('31', ''),
+    # ('32', ''),
+    # ('33', ''),
+    # ('34', ''),
+    # ('35', ''),
+    # ('36', ''),
 ]
 
 def venue_directory_path(instance, filename):
@@ -58,9 +90,9 @@ def venue_directory_path(instance, filename):
 class Venue(models.Model):
 
 
-    BREWERY = "brewery"
-    DISTILLERY = 'distillery'
-    WINERY = 'winery'
+    BREWERY = "Brewery"
+    DISTILLERY = 'Distillery'
+    WINERY = 'Winery'
     
     BDW_CHOICES = [
         (BREWERY, 'Brewery'),
@@ -99,7 +131,7 @@ class Venue(models.Model):
     venue_img = models.ImageField(blank=True, null=True, upload_to=venue_directory_path)
     venue_img_caption = models.CharField(blank=True, null=True, max_length=100)
     followers_list = models.ManyToManyField('User', related_name="venue_followers", blank=True)
-    tags = models.CharField(choices=TAG_CHOICES, blank=True, null=True, max_length=103)
+    tags = MultiSelectField(choices=TAG_LIST, blank=True, null=True)
     join_date = models.DateTimeField(auto_now_add=True)
     
     class Meta:
