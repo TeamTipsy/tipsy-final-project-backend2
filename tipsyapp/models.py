@@ -9,7 +9,6 @@ def user_directory_path(instance, filename):
 
     
 class User(AbstractUser):
-
     user_id = models.UUIDField(primary_key=True, default= uuid.uuid4, editable=False, unique=True)
     username = models.CharField(max_length=32, unique=True)
     first_name = models.CharField(max_length=50)
@@ -25,6 +24,7 @@ class User(AbstractUser):
     prof_pic = models.URLField(max_length=300)
     prof_pic_img = models.ImageField(null=True, blank=True, upload_to=user_directory_path)
     star_user = models.BooleanField(default=False)
+    is_private = models.BooleanField(null=True, blank=True)
     users_following_list = models.ManyToManyField('User', related_name="user_follows", blank=True)
     users_followed_by_list = models.ManyToManyField('User', related_name="followed_by", blank=True)
     venues_following_list = models.ManyToManyField('Venue', related_name="venue_follows", blank=True)
@@ -52,12 +52,12 @@ TAG_LIST = [
     ('4', 'Large Variety of Draft Beers'),
 ]
 
+
 def venue_directory_path(instance, filename):
     return 'venue/{0}/{1}'.format(instance.venue_id, filename)
 
+
 class Venue(models.Model):
-
-
     BREWERY = "brewery"
     DISTILLERY = 'distillery'
     WINERY = 'winery'
@@ -79,6 +79,7 @@ class Venue(models.Model):
         (APPETIZERS, 'Great Appetizers'),
         (LOTSODRAFTS, 'Large Variety of Draft Beers'),
     ]
+
     venue_id = models.UUIDField(primary_key=True, default= uuid.uuid4, editable=False, unique=True)
     venue_name = models.CharField(max_length=100)
     venue_type = models.CharField(choices=BDW_CHOICES, default='brewery', max_length=30)
@@ -111,9 +112,8 @@ class Venue(models.Model):
 def post_directory_path(instance, filename):
     return 'post/{0}/{1}'.format(instance.post_id, filename)
 
+
 class Post(models.Model):
-
-
     post_id = models.UUIDField(primary_key=True, default= uuid.uuid4, editable=False, unique=True)
     post_author = models.ForeignKey(User, on_delete=models.CASCADE, related_name="posts_by")
     posted_to_user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="posted_to_user", blank=True, null=True)
@@ -124,6 +124,7 @@ class Post(models.Model):
     post_img_file = models.ImageField(null=True, blank=True, upload_to=post_directory_path)
     post_img_caption = models.CharField(blank=True, null=True, max_length=100)
     post_text = models.TextField(max_length=800, blank=True, null=True)  
+
 
     class Meta:
         ordering=['post_date']
@@ -163,3 +164,16 @@ class Post(models.Model):
     def __str__(self):
         return f'{self.post_id}'    
 
+class CheckIn(models.Model):
+    # checkin_id = models.UUIDField(primary_key=True, default= uuid.uuid4, 
+    #     editable=False, unique=True)
+    # checkin_user = models.ForeignKey(User, on_delete=models.CASCADE, 
+    #     related_name="checkin_user")
+    checkin_user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="checkin_user")
+
+    checkedin_venue = models.ForeignKey(Venue, on_delete=models.CASCADE, 
+        related_name="checkedin_venue")
+    checkin_time = models.DateTimeField(auto_now_add=True)
+
+
+    
