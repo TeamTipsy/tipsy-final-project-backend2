@@ -6,8 +6,11 @@ from multiselectfield import MultiSelectField
 
 def user_directory_path(instance, filename):
     return 'profile/{0}/{1}'.format(instance.user_id, filename)
+ 
+def post_directory_path(instance, filename):
+    return 'post/{0}/{1}'.format(instance.post_id, filename)
 
-    
+
 class User(AbstractUser):
     user_id = models.UUIDField(primary_key=True, default= uuid.uuid4, editable=False, unique=True)
     username = models.CharField(max_length=32, unique=True)
@@ -89,6 +92,7 @@ def venue_directory_path(instance, filename):
     return 'venue/{0}/{1}'.format(instance.venue_id, filename)
 
 
+class Venue(models.Model):
     BREWERY = "Brewery"
     DISTILLERY = 'Distillery'
     WINERY = 'Winery'
@@ -140,8 +144,6 @@ def venue_directory_path(instance, filename):
     def __str__(self):
         return f'{self.venue_name}'
 
-def post_directory_path(instance, filename):
-    return 'post/{0}/{1}'.format(instance.post_id, filename)
 
 
 class Post(models.Model):
@@ -207,4 +209,3 @@ class CheckIn(models.Model):
     checkin_time = models.DateTimeField(auto_now_add=True)
 
 
-    
