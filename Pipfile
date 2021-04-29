@@ -19,6 +19,7 @@ pillow = "*"
 boto3 = "*"
 django-storages = "*"
 django-multiselectfield = "*"
+django-heroku = "*"
 
 [dev-packages]
 
