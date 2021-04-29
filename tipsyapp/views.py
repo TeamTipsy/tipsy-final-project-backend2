@@ -3,6 +3,7 @@ from .forms import MyUserCreationForm, MyUserChangeForm, Upload, VenueUpload, Po
 from django.views.generic.edit import FormView
 from rest_framework import generics, permissions, filters
 from rest_framework.response import Response
+from rest_framework.permissions import IsAuthenticated
 from .permissions import IsPostAuthorOrReadOnly, IsVenueOwnerOrReadOnly
 from rest_framework.exceptions import ValidationError
 from .models import User, Venue, Post, CheckIn
@@ -128,6 +129,7 @@ class Upload(FormView):
     template_name = 'index.html'
     form_class = Upload
     success_url = '/'
+    permission_classes = [IsAuthenticated]
 
     def form_valid(self, form):
         form.save()
@@ -139,6 +141,7 @@ class VenueUpload(FormView):
     template_name ='index.html'
     form_class = VenueUpload
     success_url = '/'
+    permission_classes = [IsAuthenticated]
 
     def form_valid(self, form):
         form.save()
@@ -150,6 +153,7 @@ class PostUpload(FormView):
     template_name ='index.html'
     form_class = PostUpload
     success_url = '/'
+    permission_classes = [IsAuthenticated]
 
     def form_valid(self, form):
         form.save()
