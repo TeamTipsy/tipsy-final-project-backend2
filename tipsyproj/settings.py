@@ -102,7 +102,7 @@ CORS_ORIGIN_ALLOW_ALL = True
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
 
 DATABASES = {
-    'default': env.db()
+    # 'default': env.db()
 }
 
 
