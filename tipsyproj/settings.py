@@ -18,8 +18,8 @@ import django_heroku
 import uuid 
 
 
-# env = environ.Env()
-# environ.Env.read_env()
+env = environ.Env()
+environ.Env.read_env()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 # BASE_DIR = Path(__file__).resolve().parent.parent
@@ -30,8 +30,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-# SECRET_KEY = env('SECRET_KEY')
-# SECRET_KEY="debugging&%&%"
+SECRET_KEY = env('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -102,7 +101,7 @@ CORS_ORIGIN_ALLOW_ALL = True
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
 
 DATABASES = {
-    # 'default': env.db()
+    'default': env.db()
 }
 
 
@@ -149,8 +148,8 @@ STATIC_URL = '/static/'
 STATICFILES_DIRS = (os.path.join('static'), )
 
 
-# AWS_ACCESS_KEY_ID = env('ACCESS_KEY_ID')
-# AWS_SECRET_ACCESS_KEY = env('SECRET_ACCESS_KEY')
+AWS_ACCESS_KEY_ID = env('ACCESS_KEY_ID')
+AWS_SECRET_ACCESS_KEY = env('SECRET_ACCESS_KEY')
 AWS_STORAGE_BUCKET_NAME = 'team-tipsy-images'
 AWS_S3_CUSTOM_DOMAIN = '%s.s3.amazonaws.com' % AWS_STORAGE_BUCKET_NAME
 AWS_S3_OBJECT_PARAMETERS = {'CacheControl': 'max-age=86400',}
