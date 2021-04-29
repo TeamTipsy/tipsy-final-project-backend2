@@ -22,7 +22,8 @@ env = environ.Env()
 environ.Env.read_env()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
-BASE_DIR = Path(__file__).resolve().parent.parent
+# BASE_DIR = Path(__file__).resolve().parent.parent
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 
 # Quick-start development settings - unsuitable for production
@@ -142,8 +143,10 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.2/howto/static-files/
 
 # STATIC_ROOT = ''
-# STATIC_URL = '/static/'
-# STATICFILES_DIRS = (os.path.join('static'), )
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+
+STATIC_URL = '/static/'
+STATICFILES_DIRS = (os.path.join('static'), )
 
 
 AWS_ACCESS_KEY_ID = env('ACCESS_KEY_ID')
@@ -154,9 +157,9 @@ AWS_S3_OBJECT_PARAMETERS = {'CacheControl': 'max-age=86400',}
 AWS_DEFAULT_ACL = 'public-read'
 
 AWS_LOCATION = 'static'
-STATICFILES_DIRS = (os.path.join(BASE_DIR, 'static'), )
+# STATICFILES_DIRS = (os.path.join(BASE_DIR, 'static'), )
 
-STATIC_URL = 'https://%s/%s/' % (AWS_S3_CUSTOM_DOMAIN, AWS_LOCATION)
+# STATIC_URL = 'https://%s/%s/' % (AWS_S3_CUSTOM_DOMAIN, AWS_LOCATION)
 STATICFILES_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
 DEFAULT_FILE_STORAGE = 'tipsyproj.storages.MediaStore'
 
