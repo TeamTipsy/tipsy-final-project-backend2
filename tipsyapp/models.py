@@ -214,3 +214,7 @@ class CheckIn(models.Model):
     def __str__(self):
         return f'check in at venue {self.checkedin_venue} user at {self.checkin_time}'
 
+
+
+
+# 8008135
