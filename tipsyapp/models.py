@@ -49,28 +49,28 @@ VENUE_TYPE = [
 
 
 TAG_LIST = [
-    ('1', 'Outdoor Seating/Patio'),
-    ('2', 'Pet Friendly'),
-    ('3', 'Appetizers'),
-    ('4', 'Large Variety of Draft Beers'),
-    ('5', 'Cider Options'),
-    ('6', 'Wine Options'),
-    ('7', 'Trivia'),
-    ('8', 'Live Entertainment'),
-    ('9', 'Knowledgable Staff'),
-    ('10', 'Flea Markets'),
-    ('11', 'Beer Options'),
-    ('12', 'Food Trucks'),
-    ('13', 'MUST VISIT!'),
-    ('14', 'Friendly Staff'),
-    ('15', 'Indoor Seating'),
-    ('16', 'Cool Vibes'),
-    ('17', 'Hazy IPAs'),
-    ('18', 'NE IPAs'),
-    ('19', 'Sours/Goses'),
-    ('20', 'Saisons'),
-    ('21', 'Lagers'),
-    ('22', 'Amber/Red Ales'),
+    ('Outdoor Seating/Patio', 'Outdoor Seating/Patio'),
+    ('Pet Friendly', 'Pet Friendly'),
+    ('Appetizers', 'Appetizers'),
+    ('Large Variety of Draft Beers', 'Large Variety of Draft Beers'),
+    ('Cider Options', 'Cider Options'),
+    ('Wine Options', 'Wine Options'),
+    ('Trivia', 'Trivia'),
+    ('Live Entertainment', 'Live Entertainment'),
+    ('Knowledgable Staff', 'Knowledgable Staff'),
+    ('Flea Markets', 'Flea Markets'),
+    ('Beer Options', 'Beer Options'),
+    ('Food Trucks', 'Food Trucks'),
+    ('MUST VISIT!', 'MUST VISIT!'),
+    ('Friendly Staff', 'Friendly Staff'),
+    ('Indoor Seating', 'Indoor Seating'),
+    ('Cool Vibes', 'Cool Vibes'),
+    ('Hazy IPAs', 'Hazy IPAs'),
+    ('NE IPAs', 'NE IPAs'),
+    ('Sours/Goses', 'Sours/Goses'),
+    ('Saisons', 'Saisons'),
+    ('Lagers', 'Lagers'),
+    ('Amber/Red Ales', 'Amber/Red Ales'),
     # ('23', ''),
     # ('24', ''),
     # ('25', ''),
@@ -214,3 +214,7 @@ class CheckIn(models.Model):
     def __str__(self):
         return f'check in at venue {self.checkedin_venue} user at {self.checkin_time}'
 
+
+
+
+# 8008135
