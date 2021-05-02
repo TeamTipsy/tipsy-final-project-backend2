@@ -153,6 +153,7 @@ class Post(models.Model):
     post_likers = models.ManyToManyField('User', related_name="post_likers", blank = True)
     post_date = models.DateTimeField(auto_now_add=True)
     post_img_1 = models.ImageField(null=True, blank=True, upload_to=post_directory_path)
+    post_img_url = models.URLField(null=True, blank=True, max_length=400)
     # post_img_2 = models.ImageField(null=True, blank=True, upload_to=post_directory_path)
     # post_img_3 = models.ImageField(null=True, blank=True, upload_to=post_directory_path)
     post_text = models.TextField(max_length=800, blank=True, null=True)  

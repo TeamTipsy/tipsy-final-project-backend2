@@ -29,7 +29,7 @@ class PostSerializer(serializers.ModelSerializer):
             'posted_to_venue_name',
             'post_likers',
             'post_date',
-            # 'post_img_1',
+            'post_img_url',
             'post_text',
         ]        
 
@@ -81,7 +81,7 @@ class UserSerializer(serializers.ModelSerializer):
             'city',
             'state', 
             'bio_text',  
-            # 'prof_pic', 
+            'prof_pic', 
             'join_date',
             'star_user',  
             'users_following_list', 

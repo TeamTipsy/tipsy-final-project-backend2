@@ -1,4 +1,5 @@
 from django.shortcuts import render, get_object_or_404
+from django.http import JsonResponse
 from .forms import MyUserCreationForm, MyUserChangeForm #, Upload, VenueUpload, PostUpload
 from django.views.generic.edit import FormView
 from rest_framework import generics, permissions, filters
@@ -84,38 +85,79 @@ class PostList(generics.ListCreateAPIView):
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
     parser_classes = [JSONParser, MultiPartParser]
 
-    @action(detail=False, methods=['post'])
-    def image(self, request, id=None):
-        imagefile = request.data.__getitem__('img')
-        # json_input = json.load(request.data.__getitem__('jsondata'))
-        # print("json input:", json_input)
-        user = self.get_object()
-        user.imagefile.save(imagefile.name, imagefile, save=True)
-        print("image saved- in theory")
-        serializer = self.get_serializer(user)
-        return Response(serializer.data, status=201)
-    def get_parser_classes(self):
-        if type(self.request.data)==dict:
-            return [JSONParser]
-        return [MultiPartParser]
-    def perform_create(self, serializer):
-        print("ZZZZ", type(self.request.data))
-        print(self.request.data)
-        json_input = self.request.data.__getitem__('jsondata')
-        print("json_input:", json_input)
-        willitload = json.loads(json_input)
-        print("will it load?", willitload)
-        p2v = uuid.UUID(willitload['posted_to_venue'])
-        print("willitload[posted_to_venue]:", p2v)
-        print("willitload[posted_to_venue] TYPE:", type(p2v))
-        # print("json_input[0]:", json_input[0])
-        print("and here is how we get the image object", self.request.data.__getitem__('img'))
-        # img = self.request.data.__getitem__('img')
-        # img.save()
-        # print("img saved hopefully:", img)
-        serializer.save(post_author = self.request.user, posted_to_venue = p2v)
-        # serializer.save(post_author = self.request.user, posted_to_venue = json_input['posted_to_venue'] )
 
+    # def post(self, request, format=None):
+    #     print("zzzzzz", request.data)
+    #     serializer = PostSerializer(data = json.loads(request.data.__getitem__('jsondata')))
+    #     imagefile = request.data.__getitem__('img')
+    #     thispost = self.get_this_post()
+    #     thispost.post_img_1.save(imagefile.name, imagefile, save=True)
+
+    #     if serializer.is_valid():
+    #         serializer.save(post_author=self.request.user)
+    #         return JsonResponse(serializer.data)
+    #     print('serializer wasnt valid dude')
+    #     return JsonResponse(serializer.errors, status=400)    
+    # def get_this_post(self):
+    #     print("I hate coding", self.get_queryset())
+    #     post_instance = get_object_or_404(
+    #         self.get_queryset(), pk=self.kwargs["post_id"])
+    #     print(post_instance)
+    #     return post_instance
+
+    
+
+'''
+    def post(self, request, format=None):
+        print("zzzzzz", request.data)
+        serializer = PostSerializer(data = json.loads(request.data.__getitem__('jsondata')))
+        imagefile = request.data.__getitem__('img')
+        user = self.request.user
+        print("USER:", user)
+
+        if serializer.is_valid():
+            user.prof_pic.save(imagefile.name, imagefile, save=True)
+            serializer.save(post_author=self.request.user)
+            return JsonResponse(serializer.data)
+        print('serializer wasnt valid dude')
+        return JsonResponse(serializer.errors, status=400)    
+'''
+
+#why is my computer reading this
+
+'''    
+@action(detail=False, methods=['post'])
+def image(self, request, id=None):
+    imagefile = request.data.__getitem__('img')
+    # json_input = json.load(request.data.__getitem__('jsondata'))
+    # print("json input:", json_input)
+    user = self.get_object()
+    user.imagefile.save(imagefile.name, imagefile, save=True)
+    print("image saved- in theory")
+    serializer = self.get_serializer(user)
+    return Response(serializer.data, status=201)
+def get_parser_classes(self):
+    if type(self.request.data)==dict:
+        return [JSONParser]
+    return [MultiPartParser]
+def perform_create(self, serializer):
+    print("ZZZZ", type(self.request.data))
+    print(self.request.data)
+    json_input = self.request.data.__getitem__('jsondata')
+    print("json_input:", json_input)
+    willitload = json.loads(json_input)
+    print("will it load?", willitload)
+    p2v = uuid.UUID(willitload['posted_to_venue'])
+    print("willitload[posted_to_venue]:", p2v)
+    print("willitload[posted_to_venue] TYPE:", type(p2v))
+    # print("json_input[0]:", json_input[0])
+    print("and here is how we get the image object", self.request.data.__getitem__('img'))
+    # img = self.request.data.__getitem__('img')
+    # img.save()
+    # print("img saved hopefully:", img)
+    serializer.save(post_author = self.request.user, posted_to_venue = p2v)
+    # serializer.save(post_author = self.request.user, posted_to_venue = json_input['posted_to_venue'] )
+'''
 
 
 class PostDetail(generics.RetrieveUpdateDestroyAPIView):
@@ -138,6 +180,22 @@ class PostDetail(generics.RetrieveUpdateDestroyAPIView):
             request.user.posts_liked.remove(obj.post_id)
             return Response({'detail': 'Post Unliked'})
         return Response({'detail': 'something went wrong with your follow request. are you passing a token?'})
+
+    def patch(self, request, pk):
+        thispost = Post.objects.get(post_id=pk)
+        print("zzzzzz", request.data)
+        serializer = PostSerializer(data = json.loads(request.data.__getitem__('jsondata')))
+        imagefile = request.data.__getitem__('img')
+        print('thispost:', thispost)
+        thispost.post_img_1.save(imagefile.name, imagefile, save=True)
+        print("did the image save?", thispost.post_img_1)
+        image_url = thispost.post_img_1.url
+
+        if serializer.is_valid():
+            serializer.save(post_author=self.request.user, post_img_url = image_url )
+            return JsonResponse(serializer.data)
+        print('serializer wasnt valid dude')
+        return JsonResponse(serializer.errors, status=400)    
 
 
 
