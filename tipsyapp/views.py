@@ -80,19 +80,19 @@ class PostList(generics.ListCreateAPIView):
     search_fields = ['post_text',]
     filter_backends = (filters.SearchFilter,)
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
-    # parser_classes = [MultiPartParser, FileUploadParser, JSONParser]
-    parser_classes = [JSONParser]
+    parser_classes = [JSONParser, MultiPartParser]
+    # parser_classes = [JSONParser]
 
     @action(detail=False, methods=['post'])
     def get_parser_classes(self):
-        print("ZZZZ", type(self.request.data))
         if type(self.request.data)==dict:
             return [JSONParser]
         return [MultiPartParser]
     def perform_create(self, serializer):
         print("ZZZZ", type(self.request.data))
-        # print(type(self.request.data)==QueryDict)
         print(self.request.data)
+        print("here's how we call json data", self.request.data.__getitem__('jsondata'))
+        print("and here is how we get the image object", self.request.data.__getitem__('img'))
         serializer.save(post_author = self.request.user)
 
 
