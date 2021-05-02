@@ -47,12 +47,18 @@ class UserDetail(generics.RetrieveUpdateDestroyAPIView):
     def patch(self, request, pk):
         user = self.request.user
         serializer = UserSerializer(data = json.loads(request.data.__getitem__('jsondata')))
-        prof_pic_file = request.data.__getitem__('prof_pic')
-        user.prof_pic.save(prof_pic_file.name, prof_pic_file, save=True)
-        print("did the image save?", user.prof_pic)
-        image_url = user.prof_pic.url
+        if request.data.__contains__('banner_img'):
+            prof_pic_file = request.data.__getitem__('prof_pic')
+            user.prof_pic.save(prof_pic_file.name, prof_pic_file, save=True)
+            print("did the profile pic save?", user.prof_pic)
+            pp_url = user.prof_pic.url
+        if request.data.__contains__('banner_img'):
+            banner_img_file = request.data.__getitem__('banner_img')
+            user.banner_img.save(banner_img_file.name, banner_img_file, save=True)
+            print("did the banner image save?", user.banner_img)
+            bi_url = user.banner_img.url
         if serializer.is_valid():
-            serializer.save(prof_pic_url = image_url )
+            serializer.save(prof_pic_url = pp_url, banner_img_url= bi_url )
             return JsonResponse(serializer.data)
         print('serializer wasnt valid dude')
         return JsonResponse(serializer.errors, status=400)    
