@@ -1,11 +1,13 @@
 from django.shortcuts import render, get_object_or_404
-from .forms import MyUserCreationForm, MyUserChangeForm, Upload, VenueUpload, PostUpload
+from .forms import MyUserCreationForm, MyUserChangeForm #, Upload, VenueUpload, PostUpload
 from django.views.generic.edit import FormView
 from rest_framework import generics, permissions, filters
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from .permissions import IsPostAuthorOrReadOnly, IsVenueOwnerOrReadOnly
 from rest_framework.exceptions import ValidationError
+from rest_framework.parsers import FormParser, MultiPartParser, JSONParser, FileUploadParser
+from rest_framework.decorators import action
 from .models import User, Venue, Post, CheckIn
 from .serializers import UserSerializer, VenueSerializer, PostSerializer, CheckInSerializer
 from .decorators import unauthenticated_user, allowed_users
@@ -70,9 +72,6 @@ class VenueDetail(generics.RetrieveUpdateDestroyAPIView):
         return Response({'detail': 'something went wrong with your follow request. are you passing a token?'})
 
 
-# class CheckInDetail(generics.ListCreateAPIView):
-    
-
 
 
 class PostList(generics.ListCreateAPIView):
@@ -81,14 +80,54 @@ class PostList(generics.ListCreateAPIView):
     search_fields = ['post_text',]
     filter_backends = (filters.SearchFilter,)
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+    # parser_classes = [MultiPartParser, FileUploadParser, JSONParser]
+    parser_classes = [JSONParser]
 
+    @action(detail=False, methods=['post'])
+    def get_parser_classes(self):
+        print("ZZZZ", type(self.request.data))
+        if type(self.request.data)==dict:
+            return [JSONParser]
+        return [MultiPartParser]
     def perform_create(self, serializer):
+        print("ZZZZ", type(self.request.data))
+        # print(type(self.request.data)==QueryDict)
+        print(self.request.data)
         serializer.save(post_author = self.request.user)
+
+
+    # def post_image(self, request, id=None):
+    #     print("ZZZZZZZZZZZZZZZZZ")
+    #     print("ZZZZZZZZZZZZZZZZZ")
+    #     print("ZZZZZZZZZZZZZZZZZ")
+    #     print("ZZZZZZZZZZZZZZZZZ")
+    #     print(request.data)
+    #     if 'image1' not in request.data:
+    #         raise ParseError("You didn't add an image- I should fix this")
+    #     file = request.data['image1']
+    #     user = self.get_object()
+    #     user.post_image.save(file.name, file, save=True)
+    #     serializer = self.get_serializer(user)
+    #     return Response(serializer.data, status=201)       
+
+    
+    
+    # def perform_create(self, serializer):
+    #     serializer.save(post_author = self.request.user)
+    # def post_image(self, request, id=None):
+    #     if 'file' not in request.data:
+    #         raise ParseError("You didn't add an image- I should fix this")
+    #     file = request.data['file']
+    #     user = self.get_object()
+    #     user.post_image.save(file.name, file, save=True)
+    #     serializer = self.get_serializer(user)
+    #     return Response(serializer.data, status=201)       
 
 
 class PostDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = Post.objects.all()
     serializer_class = PostSerializer
+    parser_classes = [MultiPartParser, FileUploadParser, JSONParser]
     permission_classes = [
         permissions.IsAuthenticatedOrReadOnly, 
         IsPostAuthorOrReadOnly,
@@ -105,6 +144,7 @@ class PostDetail(generics.RetrieveUpdateDestroyAPIView):
             request.user.posts_liked.remove(obj.post_id)
             return Response({'detail': 'Post Unliked'})
         return Response({'detail': 'something went wrong with your follow request. are you passing a token?'})
+
 
 
 class CheckInList(generics.ListCreateAPIView):
@@ -125,37 +165,18 @@ class CheckInDetail(generics.RetrieveUpdateDestroyAPIView):
         ]
 
 
-class Upload(FormView):
-    template_name = 'index.html'
-    form_class = Upload
-    success_url = '/'
-    permission_classes = [IsAuthenticated]
-
-    def form_valid(self, form):
-        form.save()
-        print(form.cleaned_data)
-        return super().form_valid(form)
+# class UploadPost(generics.ListCreateAPIView):
+#     queryset= Post.objects.all()
+#     serializer_class = PostSerializer
+#     permission_classes = [IsAuthenticated]
 
 
-class VenueUpload(FormView):
-    template_name ='index.html'
-    form_class = VenueUpload
-    success_url = '/'
-    permission_classes = [IsAuthenticated]
+    # template_name = 'index.html'
+    # form_class = Upload
+    # success_url = '/'
 
-    def form_valid(self, form):
-        form.save()
-        print(form.cleaned_data)
-        return super().form_valid(form)
+    # def form_valid(self, form):
+    #     form.save()
+    #     print(form.cleaned_data)
+    #     return super().form_valid(form)
 
-
-class PostUpload(FormView):
-    template_name ='index.html'
-    form_class = PostUpload
-    success_url = '/'
-    permission_classes = [IsAuthenticated]
-
-    def form_valid(self, form):
-        form.save()
-        print(form.cleaned_data)
-        return super().form_valid(form)

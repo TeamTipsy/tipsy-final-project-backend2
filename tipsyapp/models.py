@@ -6,6 +6,9 @@ from multiselectfield import MultiSelectField
 
 def user_directory_path(instance, filename):
     return 'profile/{0}/{1}'.format(instance.user_id, filename)
+
+def venue_directory_path(instance, filename):
+    return 'venue/{0}/{1}'.format(instance.venue_id, filename)
  
 def post_directory_path(instance, filename):
     return 'post/{0}/{1}'.format(instance.post_id, filename)
@@ -24,8 +27,8 @@ class User(AbstractUser):
     state = models.CharField(max_length=150)
     bio_text = models.TextField(max_length=500, blank=True, null=True)
     join_date = models.DateTimeField(auto_now_add=True)
-    prof_pic = models.URLField(max_length=300)
-    prof_pic_img = models.ImageField(null=True, blank=True, upload_to=user_directory_path)
+    prof_pic = models.ImageField(null=True, blank=True, upload_to=user_directory_path)
+    banner_img = models.ImageField(null=True, blank=True, upload_to=user_directory_path)
     star_user = models.BooleanField(default=False)
     is_private = models.BooleanField(null=True, blank=True)
     users_following_list = models.ManyToManyField('User', related_name="user_follows", blank=True)
@@ -88,10 +91,6 @@ TAG_LIST = [
 ]
 
 
-def venue_directory_path(instance, filename):
-    return 'venue/{0}/{1}'.format(instance.venue_id, filename)
-
-
 class Venue(models.Model):
     BREWERY = "Brewery"
     DISTILLERY = 'Distillery'
@@ -131,8 +130,8 @@ class Venue(models.Model):
     city = models.CharField(max_length=150)
     state = models.CharField(max_length=150)
     zip = models.DecimalField(max_digits=5, decimal_places=0, blank=True, null=True)
-    prof_pic = models.URLField(max_length=300, blank=True, null=True)
-    venue_img = models.ImageField(blank=True, null=True, upload_to=venue_directory_path)
+    v_prof_pic = models.ImageField(blank=True, null=True, upload_to=venue_directory_path)
+    v_banner_img = models.ImageField(blank=True, null=True, upload_to=venue_directory_path)
     venue_img_caption = models.CharField(blank=True, null=True, max_length=100)
     followers_list = models.ManyToManyField('User', related_name="venue_followers", blank=True)
     tags = MultiSelectField(choices=TAG_LIST, blank=True, null=True)
@@ -153,9 +152,9 @@ class Post(models.Model):
     posted_to_venue = models.ForeignKey(Venue, on_delete=models.CASCADE, related_name="posted_to_venue", blank=True, null=True)
     post_likers = models.ManyToManyField('User', related_name="post_likers", blank = True)
     post_date = models.DateTimeField(auto_now_add=True)
-    post_img = models.URLField(max_length=300, blank=True, null=True)
-    post_img_file = models.ImageField(null=True, blank=True, upload_to=post_directory_path)
-    post_img_caption = models.CharField(blank=True, null=True, max_length=100)
+    post_img_1 = models.ImageField(null=True, blank=True, upload_to=post_directory_path)
+    # post_img_2 = models.ImageField(null=True, blank=True, upload_to=post_directory_path)
+    # post_img_3 = models.ImageField(null=True, blank=True, upload_to=post_directory_path)
     post_text = models.TextField(max_length=800, blank=True, null=True)  
 
 
@@ -179,15 +178,15 @@ class Post(models.Model):
                 name="%(app_label)s_%(class)s_post_text_ANDOR_img",
                 check=(
                     models.Q(
-                        post_img__isnull=False,
+                        post_img_1__isnull=False,
                         post_text__isnull=False,
                     )
                     | models.Q(
-                        post_img__isnull=True,
+                        post_img_1__isnull=True,
                         post_text__isnull=False,
                     )
                     | models.Q(
-                        post_img__isnull=False,
+                        post_img_1__isnull=False,
                         post_text__isnull=True,
                     )
                 ),
@@ -198,12 +197,8 @@ class Post(models.Model):
         return f'{self.post_id}'    
 
 class CheckIn(models.Model):
-    # checkin_id = models.UUIDField(primary_key=True, default= uuid.uuid4, 
-    #     editable=False, unique=True)
-    # checkin_user = models.ForeignKey(User, on_delete=models.CASCADE, 
-    #     related_name="checkin_user")
-    checkin_user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="checkin_user")
-
+    checkin_user = models.ForeignKey(User, on_delete=models.CASCADE, 
+        related_name="checkin_user")
     checkedin_venue = models.ForeignKey(Venue, on_delete=models.CASCADE, 
         related_name="checkedin_venue")
     checkin_time = models.DateTimeField(auto_now_add=True)

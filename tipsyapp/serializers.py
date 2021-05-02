@@ -1,5 +1,5 @@
 from rest_framework import serializers, fields
-from .models import CheckIn, User, Venue, Post, CheckIn
+from .models import User, Venue, Post, CheckIn
 from .models import TAG_LIST
 
 
@@ -12,7 +12,7 @@ class PostSerializer(serializers.ModelSerializer):
     #     )
     post_author_username = serializers.ReadOnlyField(source='post_author.username')
     post_author_id = serializers.ReadOnlyField(source='post_author.user_id')
-    post_author_pic = serializers.ReadOnlyField(source='post_author.prof_pic')
+    # post_author_pic = serializers.ReadOnlyField(source='post_author.prof_pic')
     posted_to_venue_name = serializers.ReadOnlyField(source='posted_to_venue.venue_name')
     posted_to_username = serializers.ReadOnlyField(source='posted_to_user.username')
 
@@ -22,14 +22,14 @@ class PostSerializer(serializers.ModelSerializer):
             'post_id',
             'post_author_username',
             'post_author_id',
-            'post_author_pic',
+            # 'post_author_pic',
             'posted_to_user',
             'posted_to_username',
             'posted_to_venue',
             'posted_to_venue_name',
             'post_likers',
             'post_date',
-            'post_img',
+            # 'post_img_1',
             'post_text',
         ]        
 
@@ -81,7 +81,7 @@ class UserSerializer(serializers.ModelSerializer):
             'city',
             'state', 
             'bio_text',  
-            'prof_pic', 
+            # 'prof_pic', 
             'join_date',
             'star_user',  
             'users_following_list', 
@@ -134,7 +134,7 @@ class VenueSerializer(serializers.ModelSerializer):
             'venue_added_by',
             # 'venue_info',
             'is_authenticated',
-            'prof_pic',
+            # 'v_prof_pic',
             'followers_list',
             'tags', 
             'join_date',

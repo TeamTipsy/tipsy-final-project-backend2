@@ -10,8 +10,8 @@ class MyUserCreationForm(UserCreationForm):
             'city',
             'state', 
             'bio_text',  
-            'prof_pic', 
-            'prof_pic_img',
+            # 'prof_pic', 
+            # 'banner_img',
             'star_user',  
             'users_following_list',
             )
@@ -24,36 +24,36 @@ class MyUserChangeForm(UserChangeForm):
             'city',
             'state', 
             'bio_text',  
-            'prof_pic', 
+            # 'prof_pic', 
             'star_user',  
             'users_following_list', 
             )
 
 
-class Upload(forms.ModelForm):
+# class Upload(forms.ModelForm):
 
-    class Meta:
-        model = User
-        fields = (
-            'prof_pic_img',
-        )
-
-
-class VenueUpload(forms.ModelForm):
-
-    class Meta:
-        model = Venue
-        fields = (
-            'venue_img',
-            'venue_img_caption',
-        )
+#     class Meta:
+#         model = User
+#         fields = (
+#             'prof_pic_img',
+#         )
 
 
-class PostUpload(forms.ModelForm):
+# class VenueUpload(forms.ModelForm):
 
-    class Meta:
-        model = Post
-        fields = (
-            'post_img_file',
-            'post_img_caption',
-        )
+#     class Meta:
+#         model = Venue
+#         fields = (
+#             'venue_img',
+#             'venue_img_caption',
+#         )
+
+
+# class PostUpload(forms.ModelForm):
+
+#     class Meta:
+#         model = Post
+#         fields = (
+#             'post_img_file',
+#             'post_img_caption',
+#         )
