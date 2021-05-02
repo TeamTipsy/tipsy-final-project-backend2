@@ -11,6 +11,8 @@ from rest_framework.decorators import action
 from .models import User, Venue, Post, CheckIn
 from .serializers import UserSerializer, VenueSerializer, PostSerializer, CheckInSerializer
 from .decorators import unauthenticated_user, allowed_users
+import json
+import uuid
 
 
 class UserList(generics.ListCreateAPIView):
@@ -81,9 +83,17 @@ class PostList(generics.ListCreateAPIView):
     filter_backends = (filters.SearchFilter,)
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
     parser_classes = [JSONParser, MultiPartParser]
-    # parser_classes = [JSONParser]
 
     @action(detail=False, methods=['post'])
+    def image(self, request, id=None):
+        imagefile = request.data.__getitem__('img')
+        # json_input = json.load(request.data.__getitem__('jsondata'))
+        # print("json input:", json_input)
+        user = self.get_object()
+        user.imagefile.save(imagefile.name, imagefile, save=True)
+        print("image saved- in theory")
+        serializer = self.get_serializer(user)
+        return Response(serializer.data, status=201)
     def get_parser_classes(self):
         if type(self.request.data)==dict:
             return [JSONParser]
@@ -91,37 +101,21 @@ class PostList(generics.ListCreateAPIView):
     def perform_create(self, serializer):
         print("ZZZZ", type(self.request.data))
         print(self.request.data)
-        print("here's how we call json data", self.request.data.__getitem__('jsondata'))
+        json_input = self.request.data.__getitem__('jsondata')
+        print("json_input:", json_input)
+        willitload = json.loads(json_input)
+        print("will it load?", willitload)
+        p2v = uuid.UUID(willitload['posted_to_venue'])
+        print("willitload[posted_to_venue]:", p2v)
+        print("willitload[posted_to_venue] TYPE:", type(p2v))
+        # print("json_input[0]:", json_input[0])
         print("and here is how we get the image object", self.request.data.__getitem__('img'))
-        serializer.save(post_author = self.request.user)
+        # img = self.request.data.__getitem__('img')
+        # img.save()
+        # print("img saved hopefully:", img)
+        serializer.save(post_author = self.request.user, posted_to_venue = p2v)
+        # serializer.save(post_author = self.request.user, posted_to_venue = json_input['posted_to_venue'] )
 
-
-    # def post_image(self, request, id=None):
-    #     print("ZZZZZZZZZZZZZZZZZ")
-    #     print("ZZZZZZZZZZZZZZZZZ")
-    #     print("ZZZZZZZZZZZZZZZZZ")
-    #     print("ZZZZZZZZZZZZZZZZZ")
-    #     print(request.data)
-    #     if 'image1' not in request.data:
-    #         raise ParseError("You didn't add an image- I should fix this")
-    #     file = request.data['image1']
-    #     user = self.get_object()
-    #     user.post_image.save(file.name, file, save=True)
-    #     serializer = self.get_serializer(user)
-    #     return Response(serializer.data, status=201)       
-
-    
-    
-    # def perform_create(self, serializer):
-    #     serializer.save(post_author = self.request.user)
-    # def post_image(self, request, id=None):
-    #     if 'file' not in request.data:
-    #         raise ParseError("You didn't add an image- I should fix this")
-    #     file = request.data['file']
-    #     user = self.get_object()
-    #     user.post_image.save(file.name, file, save=True)
-    #     serializer = self.get_serializer(user)
-    #     return Response(serializer.data, status=201)       
 
 
 class PostDetail(generics.RetrieveUpdateDestroyAPIView):
