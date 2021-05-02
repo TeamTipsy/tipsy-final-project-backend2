@@ -12,7 +12,7 @@ class PostSerializer(serializers.ModelSerializer):
     #     )
     post_author_username = serializers.ReadOnlyField(source='post_author.username')
     post_author_id = serializers.ReadOnlyField(source='post_author.user_id')
-    # post_author_pic = serializers.ReadOnlyField(source='post_author.prof_pic')
+    post_author_pic = serializers.ReadOnlyField(source='post_author.prof_pic_url')
     posted_to_venue_name = serializers.ReadOnlyField(source='posted_to_venue.venue_name')
     posted_to_username = serializers.ReadOnlyField(source='posted_to_user.username')
 
@@ -22,7 +22,7 @@ class PostSerializer(serializers.ModelSerializer):
             'post_id',
             'post_author_username',
             'post_author_id',
-            # 'post_author_pic',
+            'post_author_pic',
             'posted_to_user',
             'posted_to_username',
             'posted_to_venue',
@@ -81,7 +81,7 @@ class UserSerializer(serializers.ModelSerializer):
             'city',
             'state', 
             'bio_text',  
-            'prof_pic', 
+            'prof_pic_url', 
             'join_date',
             'star_user',  
             'users_following_list', 

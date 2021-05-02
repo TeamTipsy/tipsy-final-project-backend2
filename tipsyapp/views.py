@@ -26,6 +26,7 @@ class UserList(generics.ListCreateAPIView):
 
 class UserDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = User.objects.all()
+    parser_classes = [MultiPartParser, JSONParser]
     serializer_class = UserSerializer
     permission_classes = [
         permissions.IsAuthenticatedOrReadOnly, 
@@ -41,6 +42,25 @@ class UserDetail(generics.RetrieveUpdateDestroyAPIView):
             obj.users_followed_by_list.remove(request.user)
             request.user.users_following_list.remove(obj.user_id)
             return Response({'detail': 'User Unfollowed'})    
+    
+    @action(detail=True, methods=['patch'])
+    def patch(self, request, pk):
+        user = self.request.user
+        serializer = UserSerializer(data = json.loads(request.data.__getitem__('jsondata')))
+        prof_pic_file = request.data.__getitem__('prof_pic')
+        user.prof_pic.save(prof_pic_file.name, prof_pic_file, save=True)
+        print("did the image save?", user.prof_pic)
+        image_url = user.prof_pic.url
+        if serializer.is_valid():
+            serializer.save(prof_pic_url = image_url )
+            return JsonResponse(serializer.data)
+        print('serializer wasnt valid dude')
+        return JsonResponse(serializer.errors, status=400)    
+    def get_parser_classes(self):
+        if type(self.request.data)==dict:
+            return [JSONParser]
+        return [MultiPartParser]
+
 
 
 class VenueList(generics.ListCreateAPIView):
@@ -163,7 +183,7 @@ def perform_create(self, serializer):
 class PostDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = Post.objects.all()
     serializer_class = PostSerializer
-    parser_classes = [MultiPartParser, FileUploadParser, JSONParser]
+    parser_classes = [MultiPartParser, JSONParser]
     permission_classes = [
         permissions.IsAuthenticatedOrReadOnly, 
         IsPostAuthorOrReadOnly,
@@ -181,6 +201,7 @@ class PostDetail(generics.RetrieveUpdateDestroyAPIView):
             return Response({'detail': 'Post Unliked'})
         return Response({'detail': 'something went wrong with your follow request. are you passing a token?'})
 
+    @action(detail=True, methods=['patch'])
     def patch(self, request, pk):
         thispost = Post.objects.get(post_id=pk)
         print("zzzzzz", request.data)
@@ -190,12 +211,15 @@ class PostDetail(generics.RetrieveUpdateDestroyAPIView):
         thispost.post_img_1.save(imagefile.name, imagefile, save=True)
         print("did the image save?", thispost.post_img_1)
         image_url = thispost.post_img_1.url
-
         if serializer.is_valid():
             serializer.save(post_author=self.request.user, post_img_url = image_url )
             return JsonResponse(serializer.data)
         print('serializer wasnt valid dude')
         return JsonResponse(serializer.errors, status=400)    
+    def get_parser_classes(self):
+        if type(self.request.data)==dict:
+            return [JSONParser]
+        return [MultiPartParser]
 
 
 
