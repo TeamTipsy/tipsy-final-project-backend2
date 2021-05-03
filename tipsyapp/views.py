@@ -137,6 +137,8 @@ class PostList(generics.ListCreateAPIView):
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
     parser_classes = [JSONParser, MultiPartParser]
 
+    def perform_create(self, serializer):
+        serializer.save(post_author = self.request.user)
 
     # def post(self, request, format=None):
     #     print("zzzzzz", request.data)
