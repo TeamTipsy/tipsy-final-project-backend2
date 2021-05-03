@@ -43,29 +43,29 @@ class UserDetail(generics.RetrieveUpdateDestroyAPIView):
             request.user.users_following_list.remove(obj.user_id)
             return Response({'detail': 'User Unfollowed'})    
     
-    @action(detail=True, methods=['patch'])
-    def patch(self, request, pk):
-        user = self.request.user
-        serializer = UserSerializer(data = json.loads(request.data.__getitem__('jsondata')), partial=True)
-        if request.data.__contains__('prof_pic'):
-            prof_pic_file = request.data.__getitem__('prof_pic')
-            user.prof_pic.save(prof_pic_file.name, prof_pic_file, save=True)
-            print("did the profile pic save?", user.prof_pic)
-            pp_url = user.prof_pic.url
-        if request.data.__contains__('banner_img'):
-            banner_img_file = request.data.__getitem__('banner_img')
-            user.banner_img.save(banner_img_file.name, banner_img_file, save=True)
-            print("did the banner image save?", user.banner_img)
-            bi_url = user.banner_img.url
-        if serializer.is_valid():
-            serializer.save(prof_pic_url = pp_url, banner_img_url= bi_url )
-            return JsonResponse(serializer.data)
-        print('serializer wasnt valid dude')
-        return JsonResponse(serializer.errors, status=400)    
-    def get_parser_classes(self):
-        if type(self.request.data)==dict:
-            return [JSONParser]
-        return [MultiPartParser]
+    # @action(detail=True, methods=['patch'])
+    # def patch(self, request, pk):
+    #     user = self.request.user
+    #     serializer = UserSerializer(data = json.loads(request.data.__getitem__('jsondata')), partial=True)
+    #     if request.data.__contains__('prof_pic'):
+    #         prof_pic_file = request.data.__getitem__('prof_pic')
+    #         user.prof_pic.save(prof_pic_file.name, prof_pic_file, save=True)
+    #         print("did the profile pic save?", user.prof_pic)
+    #         pp_url = user.prof_pic.url
+    #     if request.data.__contains__('banner_img'):
+    #         banner_img_file = request.data.__getitem__('banner_img')
+    #         user.banner_img.save(banner_img_file.name, banner_img_file, save=True)
+    #         print("did the banner image save?", user.banner_img)
+    #         bi_url = user.banner_img.url
+    #     if serializer.is_valid():
+    #         serializer.save(prof_pic_url = pp_url, banner_img_url= bi_url )
+    #         return JsonResponse(serializer.data)
+    #     print('serializer wasnt valid dude')
+    #     return JsonResponse(serializer.errors, status=400)    
+    # def get_parser_classes(self):
+    #     if type(self.request.data)==dict:
+    #         return [JSONParser]
+    #     return [MultiPartParser]
 
 
 
@@ -233,25 +233,25 @@ class PostDetail(generics.RetrieveUpdateDestroyAPIView):
             return Response({'detail': 'Post Unliked'})
         return Response({'detail': 'something went wrong with your follow request. are you passing a token?'})
 
-    @action(detail=True, methods=['patch'])
-    def patch(self, request, pk):
-        thispost = Post.objects.get(post_id=pk)
-        print("zzzzzz", request.data)
-        serializer = PostSerializer(data = json.loads(request.data.__getitem__('jsondata')))
-        imagefile = request.data.__getitem__('img')
-        print('thispost:', thispost)
-        thispost.post_img_1.save(imagefile.name, imagefile, save=True)
-        print("did the image save?", thispost.post_img_1)
-        image_url = thispost.post_img_1.url
-        if serializer.is_valid():
-            serializer.save(post_author=self.request.user, post_img_url = image_url )
-            return JsonResponse(serializer.data)
-        print('serializer wasnt valid dude')
-        return JsonResponse(serializer.errors, status=400)    
-    def get_parser_classes(self):
-        if type(self.request.data)==dict:
-            return [JSONParser]
-        return [MultiPartParser]
+    # @action(detail=True, methods=['patch'])
+    # def patch(self, request, pk):
+    #     thispost = Post.objects.get(post_id=pk)
+    #     print("zzzzzz", request.data)
+    #     serializer = PostSerializer(data = json.loads(request.data.__getitem__('jsondata')))
+    #     imagefile = request.data.__getitem__('img')
+    #     print('thispost:', thispost)
+    #     thispost.post_img_1.save(imagefile.name, imagefile, save=True)
+    #     print("did the image save?", thispost.post_img_1)
+    #     image_url = thispost.post_img_1.url
+    #     if serializer.is_valid():
+    #         serializer.save(post_author=self.request.user, post_img_url = image_url )
+    #         return JsonResponse(serializer.data)
+    #     print('serializer wasnt valid dude')
+    #     return JsonResponse(serializer.errors, status=400)    
+    # def get_parser_classes(self):
+    #     if type(self.request.data)==dict:
+    #         return [JSONParser]
+    #     return [MultiPartParser]
 
 
 

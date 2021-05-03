@@ -11,8 +11,8 @@ class MyUserAdmin(UserAdmin):
         'city',
         'state', 
         'bio_text',  
-        # 'prof_pic', 
-        # 'banner_img',
+        'prof_pic', 
+        'banner_img',
         'star_user',  
     ]
     fieldsets = UserAdmin.fieldsets + (
@@ -20,8 +20,8 @@ class MyUserAdmin(UserAdmin):
             'city',
             'state', 
             'bio_text',  
-            # 'prof_pic', 
-            # 'banner_img',
+            'prof_pic', 
+            'banner_img',
             'star_user',  
             'users_following_list', 
             'venues_following_list')}),
