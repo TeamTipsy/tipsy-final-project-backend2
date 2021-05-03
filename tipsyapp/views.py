@@ -1,6 +1,5 @@
 from django.shortcuts import render, get_object_or_404
 from django.http import JsonResponse
-from .forms import MyUserCreationForm, MyUserChangeForm #, Upload, VenueUpload, PostUpload
 from django.views.generic.edit import FormView
 from rest_framework import generics, permissions, filters
 from rest_framework.response import Response
@@ -9,6 +8,7 @@ from .permissions import IsPostAuthorOrReadOnly, IsVenueOwnerOrReadOnly
 from rest_framework.exceptions import ValidationError
 from rest_framework.parsers import FormParser, MultiPartParser, JSONParser, FileUploadParser
 from rest_framework.decorators import action
+from rest_framework.mixins import UpdateModelMixin
 from .models import User, Venue, Post, CheckIn
 from .serializers import UserSerializer, VenueSerializer, PostSerializer, CheckInSerializer
 from .decorators import unauthenticated_user, allowed_users
@@ -46,8 +46,8 @@ class UserDetail(generics.RetrieveUpdateDestroyAPIView):
     @action(detail=True, methods=['patch'])
     def patch(self, request, pk):
         user = self.request.user
-        serializer = UserSerializer(data = json.loads(request.data.__getitem__('jsondata')))
-        if request.data.__contains__('banner_img'):
+        serializer = UserSerializer(data = json.loads(request.data.__getitem__('jsondata')), partial=True)
+        if request.data.__contains__('prof_pic'):
             prof_pic_file = request.data.__getitem__('prof_pic')
             user.prof_pic.save(prof_pic_file.name, prof_pic_file, save=True)
             print("did the profile pic save?", user.prof_pic)
@@ -82,6 +82,7 @@ class VenueList(generics.ListCreateAPIView):
 
 class VenueDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = Venue.objects.all()
+    # parser_classes = [MultiPartParser, JSONParser]
     serializer_class = VenueSerializer
     permission_classes = [
         permissions.IsAuthenticatedOrReadOnly, 
@@ -100,7 +101,32 @@ class VenueDetail(generics.RetrieveUpdateDestroyAPIView):
             return Response({'detail': 'Venue Unfollowed'})
         return Response({'detail': 'something went wrong with your follow request. are you passing a token?'})
 
-
+    # @action(detail=True, methods=['patch'])
+    # def patch(self, request, pk):
+    #     thisvenue = Venue.objects.get(venue_id=pk)
+    #     serializer = VenueSerializer(data = json.loads(request.data.__getitem__('jsondata')))
+    #     kwarglist = []
+    #     if request.data.__contains__('v_prof_pic'):
+    #         v_prof_pic_file = request.data.__getitem__('v_prof_pic')
+    #         thisvenue.v_prof_pic.save(v_prof_pic_file.name, v_prof_pic_file, save=True)
+    #         print("did the profile pic save?", thisvenue.v_prof_pic)
+    #         pp_url = thisvenue.v_prof_pic.url
+    #         kwarglist.append(pp_url)
+    #     if request.data.__contains__('v_banner_img'):
+    #         v_banner_img_file = request.data.__getitem__('v_banner_img')
+    #         thisvenue.v_banner_img.save(v_banner_img_file.name, v_banner_img_file, save=True)
+    #         print("did the banner image save?", thisvenue.v_banner_img)
+    #         bi_url = thisvenue.v_banner_img.url
+    #         kwarglist.append(pp_url)
+    #     if serializer.is_valid():
+    #         serializer.save(v_prof_pic_url = pp_url, v_banner_img_url= bi_url)
+    #         return self.partial_update(request, serializer.data)
+    #     print('serializer wasnt valid dude')
+    #     return JsonResponse(serializer.errors, status=400)    
+    # def get_parser_classes(self):
+    #     if type(self.request.data)==dict:
+    #         return [JSONParser]
+    #     return [MultiPartParser]
 
 
 class PostList(generics.ListCreateAPIView):
