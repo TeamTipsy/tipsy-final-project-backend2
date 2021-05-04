@@ -1,8 +1,13 @@
 from django.db import models
 from django.db.models import Q
+from django.utils.translation import ugettext_lazy as _
 from django.contrib.auth.models import AbstractUser
 import uuid
 from multiselectfield import MultiSelectField
+from taggit.managers import TaggableManager
+from taggit.models import GenericUUIDTaggedItemBase, TaggedItemBase
+from taggit.forms import TagField
+from taggit_labels.widgets import LabelWidget
 
 def user_directory_path(instance, filename):
     return 'profile/{0}/{1}'.format(instance.user_id, filename)
@@ -92,6 +97,15 @@ TAG_LIST = [
     # ('36', ''),
 ]
 
+# class ContentForm(forms.ModelForm):
+    # tags = TagField(required=False, widget=LabelWidget)
+
+class UUIDTaggedItem(GenericUUIDTaggedItemBase, TaggedItemBase):
+    
+    class Meta:
+        verbose_name = _("Tag")
+        verbose_name_plural = _("Tags")
+
 
 class Venue(models.Model):
     BREWERY = "Brewery"
@@ -138,7 +152,7 @@ class Venue(models.Model):
     v_banner_img_url = models.URLField(null=True, blank=True, max_length=400)
     venue_img_caption = models.CharField(blank=True, null=True, max_length=100)
     followers_list = models.ManyToManyField('User', related_name="venue_followers", blank=True)
-    tags = MultiSelectField(choices=TAG_LIST, blank=True, null=True)
+    tags = TaggableManager(through=UUIDTaggedItem, blank=True)
     join_date = models.DateTimeField(auto_now_add=True)
     
     class Meta:

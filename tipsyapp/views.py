@@ -10,10 +10,12 @@ from rest_framework.parsers import FormParser, MultiPartParser, JSONParser, File
 from rest_framework.decorators import action
 from rest_framework.mixins import UpdateModelMixin
 from .models import User, Venue, Post, CheckIn
-from .serializers import UserSerializer, VenueSerializer, PostSerializer, CheckInSerializer
+from .serializers import UserSerializer, VenueSerializer, PostSerializer, CheckInSerializer, TagSerializer
 from .decorators import unauthenticated_user, allowed_users
+from taggit.models import Tag
 import json
 import uuid
+
 
 
 class UserList(generics.ListCreateAPIView):
@@ -255,6 +257,18 @@ class PostDetail(generics.RetrieveUpdateDestroyAPIView):
     #         return [JSONParser]
     #     return [MultiPartParser]
 
+class TagList(generics.ListCreateAPIView):
+    serializer_class = TagSerializer
+
+    def get_queryset(self):
+        return Venue.objects.filter(tags__slug=self.kwargs.get('tag_slug'))
+
+class TagDetail(generics.RetrieveUpdateDestroyAPIView):
+    serializer_class = TagSerializer
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+
+    def get_queryset(self):
+        return Venue.objects.filter(tags__slug=self.kwargs.get('tag_slug'))
 
 
 class CheckInList(generics.ListCreateAPIView):
@@ -273,6 +287,7 @@ class CheckInDetail(generics.RetrieveUpdateDestroyAPIView):
     permission_classes = [
         permissions.IsAuthenticatedOrReadOnly, 
         ]
+
 
 
 # class UploadPost(generics.ListCreateAPIView):

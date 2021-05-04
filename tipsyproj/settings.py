@@ -58,6 +58,9 @@ INSTALLED_APPS = [
     'annoying',
     'storages',
     'multiselectfield',
+    'taggit',
+    'taggit_serializer',
+    'taggit_labels',
 ]
 
 MIDDLEWARE = [

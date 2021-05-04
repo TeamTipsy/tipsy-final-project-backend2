@@ -1,6 +1,7 @@
 from rest_framework import serializers, fields
 from .models import User, Venue, Post, CheckIn
 from .models import TAG_LIST
+from taggit_serializer.serializers import TagListSerializerField, TaggitSerializer
 
 
 
@@ -94,6 +95,16 @@ class UserSerializer(serializers.ModelSerializer):
             'checkin_user',
         ]
 
+class TagSerializer(TaggitSerializer, serializers.ModelSerializer):
+    tags = TagListSerializerField(read_only=True)
+    
+    class Meta:
+        model = Venue
+        fields = [
+            'tags',
+        ]
+        
+
 
 class VenueSerializer(serializers.ModelSerializer):
     # venue_info = VenueInfoSerializer(source='*', read_only=True)
@@ -112,7 +123,7 @@ class VenueSerializer(serializers.ModelSerializer):
     #     many=True, queryset=Post.objects.all()
     #     ) # see comment for same code under userserializer
     venue_added_by = serializers.ReadOnlyField(source='venue_added_by.username')
-    tags = fields.MultipleChoiceField(choices=TAG_LIST)
+    tags = TagSerializer(many=True)
         
         
     class Meta:
