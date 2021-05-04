@@ -4,15 +4,10 @@ from .models import TAG_LIST
 
 
 
-
-
 class PostSerializer(serializers.ModelSerializer):
-    # post_author = serializers.HiddenField(
-    #     default=serializers.CurrentUserDefault()
-    #     )
     post_author_username = serializers.ReadOnlyField(source='post_author.username')
     post_author_id = serializers.ReadOnlyField(source='post_author.user_id')
-    post_author_pic = serializers.ReadOnlyField(source='post_author.prof_pic_url')
+    post_author_pic = serializers.ReadOnlyField(source='post_author.pp_url')
     posted_to_venue_name = serializers.ReadOnlyField(source='posted_to_venue.venue_name')
     posted_to_username = serializers.ReadOnlyField(source='posted_to_user.username')
 
@@ -29,7 +24,7 @@ class PostSerializer(serializers.ModelSerializer):
             'posted_to_venue_name',
             'post_likers',
             'post_date',
-            'post_img_url',
+            'post_img_1',
             'post_text',
         ]        
 
@@ -37,7 +32,6 @@ class PostSerializer(serializers.ModelSerializer):
 class CheckInSerializer(serializers.ModelSerializer):
     checkin_user_id = serializers.ReadOnlyField(source='checkin_user.user_id')
     checkin_username = serializers.ReadOnlyField(source='checkin_user.username')
-    # checkedin_venuename = checkedin_venue
    
     class Meta:
         model = CheckIn
@@ -58,15 +52,10 @@ class UserSerializer(serializers.ModelSerializer):
         many=True, read_only=True
         )
 
-    # checked_in_at = CheckInSerializer(
-    #     many=True, read_only=True
-    #     )    
     checkin_user = CheckInSerializer(
         many=True, read_only=True
         )    
-    # posts_by = serializers.PrimaryKeyRelatedField(
-    #     many=True, queryset=Post.objects.all()
-    #     ) # Leaving this here in case we want it- this renders pk of posts instead of posts themselves
+
     class Meta:
         model = User
         fields = [
@@ -81,8 +70,10 @@ class UserSerializer(serializers.ModelSerializer):
             'city',
             'state', 
             'bio_text',  
-            'prof_pic_url', 
-            'banner_img_url',
+            # 'prof_pic_url', 
+            'prof_pic', 
+            # 'banner_img_url',
+            'banner_img',
             'join_date',
             'star_user',  
             'users_following_list', 
@@ -96,21 +87,14 @@ class UserSerializer(serializers.ModelSerializer):
 
 
 class VenueSerializer(serializers.ModelSerializer):
-    # venue_info = VenueInfoSerializer(source='*', read_only=True)
 
     checkedin_venue = CheckInSerializer(
         many=True, read_only=True
         )
-    # checkins = CheckInSerializer(
-    #     many=True, read_only=True
-    #     )
 
     posted_to_venue = PostSerializer(
         many=True, read_only=True
         )
-    # posted_to_venue = serializers.PrimaryKeyRelatedField(
-    #     many=True, queryset=Post.objects.all()
-    #     ) # see comment for same code under userserializer
     venue_added_by = serializers.ReadOnlyField(source='venue_added_by.username')
     tags = fields.MultipleChoiceField(choices=TAG_LIST)
         
@@ -135,8 +119,10 @@ class VenueSerializer(serializers.ModelSerializer):
             'venue_added_by',
             # 'venue_info',
             'is_authenticated',
-            'v_prof_pic_url', 
-            'v_banner_img_url',
+            'v_prof_pic', 
+            # 'v_prof_pic_url', 
+            'v_banner_img',
+            # 'v_banner_img_url',
             'followers_list',
             'tags', 
             'join_date',

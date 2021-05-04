@@ -21,6 +21,7 @@ django-storages = "*"
 django-multiselectfield = "*"
 django-heroku = "*"
 whitenoise = "*"
+django-taggit = "*"
 
 [dev-packages]
 
