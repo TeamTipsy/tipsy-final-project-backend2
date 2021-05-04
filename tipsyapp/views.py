@@ -157,8 +157,11 @@ class ImageVenueSet(mixins.ListModelMixin,
         print("~~~post", temp_serializer.initial_data)
 
 
-        debug4amy = request.data.__getitem__('v_prof_pic')
-        debug4amy.save()
+        # debug4amy = request.data.__getitem__('v_prof_pic')
+        # debug4amy.save()
+
+
+
         # if request.data.__contains__('v_prof_pic'):
         #     v_prof_pic_file = request.data.__getitem__('v_prof_pic')
         #     temp_serializer.initial_data['v_prof_pic'].save(v_prof_pic_file.name, v_prof_pic_file, save=True)

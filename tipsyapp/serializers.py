@@ -115,6 +115,13 @@ class VenueSerializer(serializers.ModelSerializer):
         
     class Meta:
         model = Venue
+
+        # get url from image file if field is not null
+        # if Venue.v_prof_pic:
+        #     print("can i even print from serializers?", Venue.v_prof_pic)
+            # Venue.v_prof_pic.save(Venue.v_prof_pic.name, Venue.v_prof_pic, save=True)
+            # v_prof_pic_url = Venue.v_prof_pic.url
+
         fields = [
             'venue_id',
             'venue_name',
@@ -133,7 +140,8 @@ class VenueSerializer(serializers.ModelSerializer):
             'venue_added_by',
             # 'venue_info',
             'is_authenticated',
-            'v_prof_pic_url', 
+            'v_prof_pic', 
+            # 'v_prof_pic_url', 
             'v_banner_img_url',
             'followers_list',
             'tags', 
