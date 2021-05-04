@@ -16,6 +16,8 @@ urlpatterns = [
     # path('upload/', Upload.as_view(), name='upload'),
     # path('venueupload/', VenueUpload.as_view(), name='venue-upload'),
     # path('postupload/', PostUpload.as_view(), name='post-upload'),
+    path('tags/', views.TagList.as_view(), name='tag-list')
+    # path('tags/<slug:tag_slug>/', views.TagDetail.as_view(), name='tag-detail'),
 
 ]
 

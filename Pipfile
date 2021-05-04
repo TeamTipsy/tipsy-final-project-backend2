@@ -21,6 +21,9 @@ django-storages = "*"
 django-multiselectfield = "*"
 django-heroku = "*"
 whitenoise = "*"
+django-taggit = "*"
+django-taggit-serializer = "*"
+django-taggit-labels = "*"
 
 [dev-packages]
 

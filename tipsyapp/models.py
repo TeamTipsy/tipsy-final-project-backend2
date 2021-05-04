@@ -1,8 +1,14 @@
 from django.db import models
 from django.db.models import Q
+from django.db.models import UniqueConstraint
+from django.utils.translation import ugettext_lazy as _
 from django.contrib.auth.models import AbstractUser
 import uuid
 from multiselectfield import MultiSelectField
+from taggit.managers import TaggableManager
+from taggit.models import GenericUUIDTaggedItemBase, TaggedItemBase
+from taggit.forms import TagField
+from taggit_labels.widgets import LabelWidget
 
 def user_directory_path(instance, filename):
     return 'profile/{0}/{1}'.format(instance.user_id, filename)
@@ -47,9 +53,9 @@ class User(AbstractUser):
 
 
 VENUE_TYPE = [
-    ('brewery', 'Brewery'),
-    ('distillery', 'Distillery'),
-    ('winery', 'Winery'),
+    ('Brewery', 'Brewery'),
+    ('Distillery', 'Distillery'),
+    ('Winery', 'Winery'),
 ]
 
 
@@ -92,6 +98,15 @@ TAG_LIST = [
     # ('36', ''),
 ]
 
+# class ContentForm(forms.ModelForm):
+    # tags = TagField(required=False, widget=LabelWidget)
+
+class UUIDTaggedItem(GenericUUIDTaggedItemBase, TaggedItemBase):
+    
+    class Meta:
+        verbose_name = _("Tag")
+        verbose_name_plural = _("Tags")
+
 
 class Venue(models.Model):
     BREWERY = "Brewery"
@@ -117,7 +132,7 @@ class Venue(models.Model):
     ]
 
     venue_id = models.UUIDField(primary_key=True, default= uuid.uuid4, editable=False, unique=True)
-    venue_name = models.CharField(max_length=100)
+    venue_name = models.CharField(max_length=100, unique=True)
     venue_type = models.CharField(choices=BDW_CHOICES, default='brewery', max_length=30)
     venue_added_by = models.ForeignKey(User, on_delete=models.CASCADE, related_name="venue_added_by")
     is_authenticated = models.BooleanField(default=False)
@@ -128,7 +143,7 @@ class Venue(models.Model):
     insta_handle= models.CharField(max_length= 30, blank=True, null=True)
     fb_link = models.URLField(max_length=160, blank=True, null=True)
     phone_num = models.CharField(max_length=12, blank=True, null=True )
-    street_address = models.CharField(max_length=150)
+    street_address = models.CharField(max_length=150, unique=True)
     city = models.CharField(max_length=150)
     state = models.CharField(max_length=150)
     zip = models.DecimalField(max_digits=5, decimal_places=0, blank=True, null=True)
@@ -138,11 +153,14 @@ class Venue(models.Model):
     v_banner_img_url = models.URLField(null=True, blank=True, max_length=400)
     venue_img_caption = models.CharField(blank=True, null=True, max_length=100)
     followers_list = models.ManyToManyField('User', related_name="venue_followers", blank=True)
-    tags = MultiSelectField(choices=TAG_LIST, blank=True, null=True)
+    tags = TaggableManager(through=UUIDTaggedItem, blank=True)
     join_date = models.DateTimeField(auto_now_add=True)
     
     class Meta:
         ordering=['-join_date']
+        constraints = [
+            UniqueConstraint(fields=['venue_name', 'street_address'], name="unique_venue_location")
+        ]
 
     def __str__(self):
         return f'{self.venue_name}'
