@@ -1,5 +1,6 @@
 from django.db import models
 from django.db.models import Q
+from django.db.models.constraints import UniqueConstraint
 from django.contrib.auth.models import AbstractUser
 import uuid
 from multiselectfield import MultiSelectField
@@ -150,6 +151,9 @@ class Venue(models.Model):
     
     class Meta:
         ordering=['-join_date']
+        constraints = [
+            UniqueConstraint(fields=['venue_name', 'street_address'], name="unique_venue_location")
+        ]
 
     def __str__(self):
         return f'{self.venue_name}'
