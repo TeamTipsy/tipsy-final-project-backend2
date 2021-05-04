@@ -44,6 +44,13 @@ class User(AbstractUser):
     def __str__(self):
         return f'{self.username}'
 
+# This fixes a bug where users without prof pics were breaking post author serializer
+    @property
+    def pp_url(self):
+        if self.prof_pic and hasattr(self.prof_pic, 'url'):
+            return self.prof_pic.url
+        # return 'null'
+
 
 
 VENUE_TYPE = [
@@ -215,6 +222,3 @@ class CheckIn(models.Model):
         return f'check in at venue {self.checkedin_venue} user at {self.checkin_time}'
 
 
-
-
-# 8008135

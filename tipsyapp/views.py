@@ -60,7 +60,6 @@ class VenueList(generics.ListCreateAPIView):
 
 class VenueDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = Venue.objects.all()
-    # parser_classes = [MultiPartParser, JSONParser]
     serializer_class = VenueSerializer
     permission_classes = [
         permissions.IsAuthenticatedOrReadOnly, 
@@ -147,63 +146,106 @@ class ImageVenueSet(mixins.ListModelMixin,
     def get(self, request):
         return self.list(request)
 
-
     def post(self, request, format=None):
-        print("**********  This is what our request data looks like:", request.data)
-        temp_serializer = self.get_serializer(data = json.loads(request.data.__getitem__('jsondata')))
-        print("********** and our initial serializer, pre additions:", temp_serializer)
-        print("~~~pre", temp_serializer.initial_data)
-        temp_serializer.initial_data['v_prof_pic']=request.data.__getitem__('v_prof_pic')
-        print("~~~post", temp_serializer.initial_data)
 
-
-        # debug4amy = request.data.__getitem__('v_prof_pic')
-        # debug4amy.save()
-
-
-
-        # if request.data.__contains__('v_prof_pic'):
-        #     v_prof_pic_file = request.data.__getitem__('v_prof_pic')
-        #     temp_serializer.initial_data['v_prof_pic'].save(v_prof_pic_file.name, v_prof_pic_file, save=True)
-        #     # request.data.v_prof_pic.save(v_prof_pic_file.name, v_prof_pic_file, save=True)
-        #     print("Lemme ALSO see somethin real quick", v_prof_pic_file.url)
-        #     vpp_url = v_prof_pic_file.url
-            # TKTKTK.v_prof_pic.save(v_prof_pic_file.name, v_prof_pic_file, save=True)
-            # print("did the profile pic save?", TKTKTK.v_prof_pic)
-        temp_serializer.is_valid(raise_exception=True)
-        self.perform_create(temp_serializer)
-        print("checking what temp serializer looks like now:", temp_serializer)
-        # return Response({'received data': request.data})        
-        return Response(
+        if request.data.__contains__('v_prof_pic') and request.data.__contains__('v_banner_img'):
+            temp_serializer = self.get_serializer(data = json.loads(request.data.__getitem__('jsondata')))
+            temp_serializer.initial_data['v_prof_pic']=request.data.__getitem__('v_prof_pic')
+            temp_serializer.initial_data['v_banner_img']=request.data.__getitem__('v_banner_img')
+            temp_serializer.is_valid(raise_exception=True)
+            self.perform_create(temp_serializer)
+            return Response(
             temp_serializer.data
-        )
+            )
+        elif request.data.__contains__('v_prof_pic'):
+            temp_serializer = self.get_serializer(data = json.loads(request.data.__getitem__('jsondata')))
+            temp_serializer.initial_data['v_prof_pic']=request.data.__getitem__('v_prof_pic')
+            temp_serializer.is_valid(raise_exception=True)
+            self.perform_create(temp_serializer)
+            return Response(
+            temp_serializer.data
+            )
+        elif request.data.__contains__('v_banner_img'):
+            temp_serializer = self.get_serializer(data = json.loads(request.data.__getitem__('jsondata')))
+            temp_serializer.initial_data['v_banner_img']=request.data.__getitem__('v_banner_img')
+            temp_serializer.is_valid(raise_exception=True)
+            self.perform_create(temp_serializer)
+            return Response(
+            temp_serializer.data
+            )
+        else:
+            return Response({'detail': 'You sent a POST without an image- you have to use the other endpoint for that. '})     
+        
     def perform_create(self, serializer):
         serializer.save(venue_added_by = self.request.user)
 
+    
 
 
-'''
-        if request.data.__contains__('v_prof_pic') and request.data.__contains__('v_banner_img'):
-            v_prof_pic_file = request.data.__getitem__('v_prof_pic')
-            v_banner_img_file = request.data.__getitem__('v_banner_img')
-            print("!!!!!!!!!!!!", v_prof_pic_file)
-            # TKTKTK.v_prof_pic.save(v_prof_pic_file.name, v_prof_pic_file, save=True)
-            # print("did the profile pic save?", TKTKTK.v_prof_pic)
-            vpp_url = temp_serializer.v_prof_pic.url
+class ImageUserSet(mixins.ListModelMixin,
+                  mixins.CreateModelMixin,
+                  generics.GenericAPIView):
+    queryset = User.objects.all()
+    serializer_class=UserSerializer
+    parser_classes = [FormParser, MultiPartParser]
+
+    def get(self, request):
+        return self.list(request)
+
+    def post(self, request, format=None):
+
+        if request.data.__contains__('prof_pic') and request.data.__contains__('banner_img'):
+            temp_serializer = self.get_serializer(data = json.loads(request.data.__getitem__('jsondata')))
+            temp_serializer.initial_data['prof_pic']=request.data.__getitem__('prof_pic')
+            temp_serializer.initial_data['banner_img']=request.data.__getitem__('banner_img')
+            temp_serializer.is_valid(raise_exception=True)
+            self.perform_create(temp_serializer)
+            return Response(
+            temp_serializer.data
+            )
+        elif request.data.__contains__('prof_pic'):
+            temp_serializer = self.get_serializer(data = json.loads(request.data.__getitem__('jsondata')))
+            temp_serializer.initial_data['prof_pic']=request.data.__getitem__('prof_pic')
+            temp_serializer.is_valid(raise_exception=True)
+            self.perform_create(temp_serializer)
+            return Response(
+            temp_serializer.data
+            )
+        elif request.data.__contains__('banner_img'):
+            temp_serializer = self.get_serializer(data = json.loads(request.data.__getitem__('jsondata')))
+            temp_serializer.initial_data['banner_img']=request.data.__getitem__('banner_img')
+            temp_serializer.is_valid(raise_exception=True)
+            self.perform_create(temp_serializer)
+            return Response(
+            temp_serializer.data
+            )
+        else:
+            return Response({'detail': 'You sent a POST without an image- you have to use the other endpoint for that. '})     
+        
+    def perform_create(self, serializer):
+        serializer.save()
 
 
+class ImagePostSet(mixins.ListModelMixin,
+                  mixins.CreateModelMixin,
+                  generics.GenericAPIView):
+    queryset = Post.objects.all()
+    serializer_class=PostSerializer
+    parser_classes = [FormParser, MultiPartParser]
+   
+    def get(self, request):
+        return self.list(request)
 
-        if request.data.__contains__('v_prof_pic'):
-            v_prof_pic_file = request.data.__getitem__('v_prof_pic')
-            thisvenue.v_prof_pic.save(v_prof_pic_file.name, v_prof_pic_file, save=True)
-            print("did the profile pic save?", thisvenue.v_prof_pic)
-            pp_url = thisvenue.v_prof_pic.url
-            kwarglist.append(pp_url)
-        if request.data.__contains__('v_banner_img'):
-            v_banner_img_file = request.data.__getitem__('v_banner_img')
-            thisvenue.v_banner_img.save(v_banner_img_file.name, v_banner_img_file, save=True)
-            print("did the banner image save?", thisvenue.v_banner_img)
-            bi_url = thisvenue.v_banner_img.url
-            kwarglist.append(pp_url)
+    def post(self, request, format=None):
+        if request.data.__contains__('post_img'):
+            temp_serializer = self.get_serializer(data = json.loads(request.data.__getitem__('jsondata')))
+            temp_serializer.initial_data['post_img_1']=request.data.__getitem__('post_img')
+            temp_serializer.is_valid(raise_exception=True)
+            self.perform_create(temp_serializer)
+            return Response(
+            temp_serializer.data
+            )  
+        return Response({'detail': 'You sent a POST without an image- you have to use the other endpoint for that. '})      
 
-'''
+    def perform_create(self, serializer):
+        serializer.save(post_author = self.request.user)    

@@ -1,7 +1,6 @@
 from django.urls import path, include
 from rest_framework.urlpatterns import format_suffix_patterns
 from . import views
-# from .views import Upload, VenueUpload, PostUpload
 
 app_name='tipsyapp'
 
@@ -14,6 +13,8 @@ urlpatterns = [
     path('posts/', views.PostList.as_view(), name='post-list'),
     path('posts/<uuid:pk>/', views.PostDetail.as_view(), name='post-detail'),
     path('img_venues/', views.ImageVenueSet.as_view(), name='venue-images'),
+    path('img_users/', views.ImageUserSet.as_view(), name='user-images'),
+    path('img_posts/', views.ImagePostSet.as_view(), name='post-images'),
     ]
 
 
