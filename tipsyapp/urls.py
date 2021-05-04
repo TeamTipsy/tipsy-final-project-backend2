@@ -13,11 +13,8 @@ urlpatterns = [
     path('venues/<uuid:pk>/', views.VenueDetail.as_view(), name='venue-detail'),
     path('posts/', views.PostList.as_view(), name='post-list'),
     path('posts/<uuid:pk>/', views.PostDetail.as_view(), name='post-detail'),
-    # path('upload/', Upload.as_view(), name='upload'),
-    # path('venueupload/', VenueUpload.as_view(), name='venue-upload'),
-    # path('postupload/', PostUpload.as_view(), name='post-upload'),
-
-]
+    path('img_venues/', views.ImageVenueSet.as_view(), name='venue-images'),
+    ]
 
 
 urlpatterns += format_suffix_patterns(urlpatterns)

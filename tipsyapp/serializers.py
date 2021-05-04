@@ -4,8 +4,6 @@ from .models import TAG_LIST
 
 
 
-
-
 class PostSerializer(serializers.ModelSerializer):
     # post_author = serializers.HiddenField(
     #     default=serializers.CurrentUserDefault()
