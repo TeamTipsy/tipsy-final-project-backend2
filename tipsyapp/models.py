@@ -55,9 +55,9 @@ class User(AbstractUser):
 
 
 VENUE_TYPE = [
-    ('brewery', 'Brewery'),
-    ('distillery', 'Distillery'),
-    ('winery', 'Winery'),
+    ('Brewery', 'Brewery'),
+    ('Distillery', 'Distillery'),
+    ('Winery', 'Winery'),
 ]
 
 
