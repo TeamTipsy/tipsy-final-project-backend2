@@ -1,5 +1,6 @@
 from django.db import models
 from django.db.models import Q
+from django.db.models import UniqueConstraint
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.auth.models import AbstractUser
 import uuid
@@ -52,9 +53,9 @@ class User(AbstractUser):
 
 
 VENUE_TYPE = [
-    ('brewery', 'Brewery'),
-    ('distillery', 'Distillery'),
-    ('winery', 'Winery'),
+    ('Brewery', 'Brewery'),
+    ('Distillery', 'Distillery'),
+    ('Winery', 'Winery'),
 ]
 
 
@@ -131,7 +132,7 @@ class Venue(models.Model):
     ]
 
     venue_id = models.UUIDField(primary_key=True, default= uuid.uuid4, editable=False, unique=True)
-    venue_name = models.CharField(max_length=100)
+    venue_name = models.CharField(max_length=100, unique=True)
     venue_type = models.CharField(choices=BDW_CHOICES, default='brewery', max_length=30)
     venue_added_by = models.ForeignKey(User, on_delete=models.CASCADE, related_name="venue_added_by")
     is_authenticated = models.BooleanField(default=False)
@@ -142,7 +143,7 @@ class Venue(models.Model):
     insta_handle= models.CharField(max_length= 30, blank=True, null=True)
     fb_link = models.URLField(max_length=160, blank=True, null=True)
     phone_num = models.CharField(max_length=12, blank=True, null=True )
-    street_address = models.CharField(max_length=150)
+    street_address = models.CharField(max_length=150, unique=True)
     city = models.CharField(max_length=150)
     state = models.CharField(max_length=150)
     zip = models.DecimalField(max_digits=5, decimal_places=0, blank=True, null=True)
@@ -157,6 +158,9 @@ class Venue(models.Model):
     
     class Meta:
         ordering=['-join_date']
+        constraints = [
+            UniqueConstraint(fields=['venue_name', 'street_address'], name="unique_venue_location")
+        ]
 
     def __str__(self):
         return f'{self.venue_name}'
